@@ -18,4 +18,19 @@ export const UserDetailAPI = {
       };
     }
   },
+  updateUser: async (Id, userData) => {
+    try {
+      const response = await API.post(`/profile/update/${Id}`, userData);
+      return { success: true };
+    } catch (error) {
+      console.error("Save Error:", error);
+      return {
+        success: false,
+        message:
+          error.response?.data?.message ||
+          "Network Error: Is the server running?",
+      };
+    }
+  },
+};
 export default UserDetailAPI;
