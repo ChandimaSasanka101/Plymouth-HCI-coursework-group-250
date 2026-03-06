@@ -36,4 +36,18 @@ export const DesignAPI = {
       };
     }
   },
+  deleteDesign: async (Id) => {
+    try {
+      const response = await API.post(`/design/delete/${Id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Save Error:", error);
+      return {
+        success: false,
+        message:
+          error.response?.data?.message ||
+          "Network Error: Is the server running?",
+      };
+    }
+  },
 export default DesignAPI;
