@@ -84,3 +84,24 @@ export const deleteDesign = async (req, res) => {
     });
   }
 };
+
+//Get selected design function
+export const seletedDesign = async (req, res) => {
+  console.log("Desgin Controller Delete function hit");
+  const designId = req.params.id || req.params.Id;
+  try {
+    const desgin = await Design.findById(designId);
+    res.status(200).json({
+      success: true,
+      count: desgin.length,
+      data: desgin,
+    });
+  } catch (error) {
+    console.error("Error in createDesign:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error: Unable to save design.",
+      error: error.message,
+    });
+  }
+};
