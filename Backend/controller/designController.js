@@ -57,3 +57,30 @@ export const getDesign = async (req, res) => {
     });
   }
 };
+
+//Delete Design function
+export const deleteDesign = async (req, res) => {
+  console.log("Desgin Controller Delete function hit");
+  //const designId = req.params.Id;
+  const designId = req.params.id || req.params.Id;
+  try {
+    const response = await Design.deleteOne({ _id: designId });
+    if (response.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Design not found or already deleted",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Design deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error in createDesign:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error: Unable to save design.",
+      error: error.message,
+    });
+  }
+};
