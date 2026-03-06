@@ -23,3 +23,29 @@ export const getUserDetails = async (req, res) => {
     });
   }
 };
+
+//Update User profile
+export const updateUser = async (req, res) => {
+  console.log("Update user function hit");
+  const userId = req.params.id || req.params.Id;
+  try {
+    const { firstName, lastName } = req.body;
+    const currentUser = await User.findById(userId);
+    if (!currentUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    //Update details
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { firstName, lastName },
+      { new: true },
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json({ success: true, message: "Update successful!" });
+  } catch (err) {
+    console.error("ERROR in Profile Update user function:", err);
+    res.status(500).send(err.message);
+  }
+};
