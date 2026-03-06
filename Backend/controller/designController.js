@@ -105,3 +105,31 @@ export const seletedDesign = async (req, res) => {
     });
   }
 };
+
+//Update design function
+export const updateDesign = async (req, res) => {
+  console.log("Desgin Controller Update function hit");
+  const designId = req.params.id || req.params.Id;
+  try {
+    const updatedDesign = await Design.findByIdAndUpdate(designId, req.body, {
+      new: true,
+    });
+    if (!updatedDesign) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Design not found" });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Design Updated Successfully",
+      data: updatedDesign,
+    });
+  } catch (error) {
+    console.error("Error in createDesign:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error: Unable to save design.",
+      error: error.message,
+    });
+  }
+};
