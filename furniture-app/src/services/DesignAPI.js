@@ -50,4 +50,18 @@ export const DesignAPI = {
       };
     }
   },
+  seletedDesign: async (Id) => {
+    try {
+      const response = await API.get(`/design/selected/${Id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Save Error:", error);
+      return {
+        success: false,
+        message:
+          error.response?.data?.message ||
+          "Network Error: Is the server running?",
+      };
+    }
+  },
 export default DesignAPI;
