@@ -21,6 +21,8 @@ function Login() {
       Swal.fire("Success", "Login Successful", "success");
       if (data.type === "Customer") {
         navigate("/home");
+      } else if (data.type === "Admin") {
+        navigate("/adminHome");
       }
     } catch (error) {
       //Error handling
