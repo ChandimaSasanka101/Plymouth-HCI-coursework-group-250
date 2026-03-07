@@ -8,6 +8,7 @@ import DesginManagement from "./pages/DesginManagement";
 import Profile from "./pages/Profile";
 import ResetPassword from "./pages/ResetPassword";
 import AdminHome from "./pages/AdminHome";
+import UserManagement from "./pages/UserManagement";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             element={<ResetPassword />}
           />
           <Route path="/adminHome" element={<AdminHome />} />
+          <Route path="/userManagement" element={<UserManagement />} />
         </Routes>
       </Router>
     </div>
