@@ -8,4 +8,5 @@ import {
 const router = express.Router();
 router.get("/get", getAllUsers);
 router.post("/banUser/:id", BanUser);
+router.post("/unBanUser/:id", UnBanUser);
 export default router;
