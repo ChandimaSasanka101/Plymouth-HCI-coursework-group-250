@@ -9,6 +9,7 @@ import RegisterRoute from "./routes/registerRoute.js";
 import DesignRoute from "./routes/designRoute.js";
 import ProfileRoute from "./routes/profileRoute.js";
 import authRoutes from "./routes/authRoutes.js";
+import UserManagement from "./routes/userManagementRoute.js";
 dotenv.config();
 connectDB();
 const app = express();
@@ -27,6 +28,7 @@ app.use("/api/register", RegisterRoute);
 app.use("/api/design", DesignRoute);
 app.use("/api/profile", ProfileRoute);
 app.use("/api/auth", authRoutes);
+app.use("/api/userManagement", UserManagement);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
