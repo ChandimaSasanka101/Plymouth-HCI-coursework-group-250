@@ -6,4 +6,5 @@ import {
   getUserStats,
 } from "../controller/userManagementController.js";
 const router = express.Router();
+router.get("/get", getAllUsers);
 export default router;
