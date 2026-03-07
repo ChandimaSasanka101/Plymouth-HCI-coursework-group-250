@@ -32,4 +32,18 @@ export const UserManagementAPI = {
       };
     }
   },
+  UnBanUser: async (Id) => {
+    try {
+      const response = await API.post(`/userManagement/unBanUser/${Id}`);
+      return { success: true };
+    } catch (error) {
+      console.error("Save Error:", error);
+      return {
+        success: false,
+        message:
+          error.response?.data?.message ||
+          "Network Error: Is the server running?",
+      };
+    }
+  },
 export default UserManagementAPI;
