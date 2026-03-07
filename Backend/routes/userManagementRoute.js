@@ -9,4 +9,5 @@ const router = express.Router();
 router.get("/get", getAllUsers);
 router.post("/banUser/:id", BanUser);
 router.post("/unBanUser/:id", UnBanUser);
+router.get("/stats", getUserStats);
 export default router;
