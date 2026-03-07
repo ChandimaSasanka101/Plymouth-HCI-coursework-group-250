@@ -4,4 +4,18 @@ const API = axios.create({
 });
 
 export const UserManagementAPI = {
+  getAllUsers: async () => {
+    try {
+      const response = await API.get("/userManagement/get");
+      return response.data;
+    } catch (error) {
+      console.error("Save Error:", error);
+      return {
+        success: false,
+        message:
+          error.response?.data?.message ||
+          "Network Error: Is the server running?",
+      };
+    }
+  },
 export default UserManagementAPI;
