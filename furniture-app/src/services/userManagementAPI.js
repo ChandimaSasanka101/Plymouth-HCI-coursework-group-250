@@ -46,4 +46,20 @@ export const UserManagementAPI = {
       };
     }
   },
+  getUserStats: async () => {
+    try {
+      const response = await API.get("/userManagement/stats");
+      return response.data;
+    } catch (error) {
+      console.error("Save Error:", error);
+      return {
+        success: false,
+        message:
+          error.response?.data?.message ||
+          "Network Error: Is the server running?",
+      };
+    }
+  },
+};
+
 export default UserManagementAPI;
