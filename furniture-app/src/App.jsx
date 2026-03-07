@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import DesginManagement from "./pages/DesginManagement";
 import Profile from "./pages/Profile";
 import ResetPassword from "./pages/ResetPassword";
+import AdminHome from "./pages/AdminHome";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             path="/passwordreset/:resetToken"
             element={<ResetPassword />}
           />
+          <Route path="/adminHome" element={<AdminHome />} />
         </Routes>
       </Router>
     </div>
