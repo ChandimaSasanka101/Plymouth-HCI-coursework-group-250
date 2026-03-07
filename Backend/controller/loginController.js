@@ -15,6 +15,12 @@ export const Login = async (req, res) => {
     if (!corrUser) {
       return res.status(404).json({ message: "User not found" });
     }
+    console.log("User Status: ", user.status);
+    if (user.status === "Banned") {
+      return res.status(404).json({
+        message: "User has been Banned, Please contact system support ",
+      });
+    }
     //success
     res.status(200).json({
       _id: user._id,
