@@ -9,4 +9,5 @@ import {
 const router = express.Router();
 router.post("/create", createDesign);
 router.get("/get/:id", getDesign);
+router.post("/delete/:id", deleteDesign);
 export default router;
