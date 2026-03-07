@@ -6,4 +6,6 @@ import {
   seletedDesign,
   updateDesign,
 } from "../controller/designController.js";
+const router = express.Router();
+router.post("/create", createDesign);
 export default router;
