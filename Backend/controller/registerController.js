@@ -2,6 +2,7 @@ import User from "../models/user.js";
 export const createUser = async (req, res) => {
   const { userFirstName, userLastName, userEamil, userPassword } = req.body;
   const type = "Customer";
+  const status = "Active";
 
   try {
     //Check if the user already exists
@@ -19,6 +20,7 @@ export const createUser = async (req, res) => {
       email: userEamil,
       password: userPassword,
       type: type,
+      status: status,
     });
     //save to db
     await newUser.save();
