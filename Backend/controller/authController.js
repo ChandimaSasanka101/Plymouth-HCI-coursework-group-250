@@ -1,6 +1,7 @@
 import User from "../models/user.js";
 import crypto from "crypto";
 import sendEmail from "../utils/sendEmail.js";
+//forgotpassword function
 export const forgotPassword = async (req, res, next) => {
   console.log("forgotPassword function hit");
   const { email } = req.body;
@@ -43,6 +44,46 @@ export const forgotPassword = async (req, res, next) => {
         .status(500)
         .json({ success: false, error: "Email could not be sent" });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const resetPassword = async (req, res, next) => {
+  console.log("resetPassword function hit");
+  //Get hashed token from URL params
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(req.params.resetToken)
+    .digest("hex");
+
+  try {
+    // Find user by Token and check if token is not expired
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, error: "Invalid Token or Token Expired" });
+    }
+
+    //Set new password
+    user.password = req.body.password;
+
+    //Clear reset fields
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    //Save
+    await user.save();
+
+    res.status(201).json({
+      success: true,
+      data: "Password Updated Success",
+    });
   } catch (error) {
     next(error);
   }
