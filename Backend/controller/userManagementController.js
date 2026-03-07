@@ -50,3 +50,26 @@ export const UnBanUser = async (req, res) => {
     res.status(500).send(err.message);
   }
 };
+//function get user stats
+export const getUserStats = async (req, res) => {
+  try {
+    const data = await User.aggregate([
+      {
+        $project: {
+          date: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+        },
+      },
+      {
+        $group: {
+          _id: "$date",
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
