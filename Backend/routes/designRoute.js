@@ -11,4 +11,5 @@ router.post("/create", createDesign);
 router.get("/get/:id", getDesign);
 router.post("/delete/:id", deleteDesign);
 router.get("/selected/:id", seletedDesign);
+router.post("/update/:id", updateDesign);
 export default router;
