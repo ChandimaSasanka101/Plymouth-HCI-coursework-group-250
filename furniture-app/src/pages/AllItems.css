@@ -1,0 +1,290 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Esteban&display=swap');
+
+
+
+
+/* --- ALL ITEMS SECTION --- */
+
+.ai-section {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #121212;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 150px 20px 100px;
+  box-sizing: border-box;
+}
+
+.ai-section-header {
+  position: relative;
+  text-align: center;
+  margin-top: 100px;
+  margin-bottom: 250px;
+  width: 100%;
+}
+
+.ai-bg-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'EUR42', 'Cinzel', serif, sans-serif;
+  font-size: 110px;
+  color: rgba(255, 255, 255, 0.04);
+  white-space: nowrap;
+  letter-spacing: 20px;
+  z-index: 1;
+  margin: 0;
+}
+
+.ai-fg-text {
+  position: relative;
+  font-family: 'EUR42', 'Cinzel', serif, sans-serif;
+  font-size: 32px;
+  color: #C1B7B8;
+  letter-spacing: 5px;
+  font-weight: 200;
+  z-index: 2;
+  margin: 0;
+}
+
+
+/* --- ITEM GRID --- */
+
+.ai-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 50px;
+  width: 100%;
+  max-width: 1600px;
+}
+
+.ai-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 240px;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  cursor: pointer;
+}
+
+.ai-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ai-item-img {
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+  margin-bottom: 22px;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.5));
+}
+
+.ai-item:hover .ai-item-img {
+  transform: scale(1.09);
+  filter: drop-shadow(0 12px 24px rgba(112, 110, 110, 0.15));
+}
+
+.ai-item-title {
+  font-family: 'EUR42', 'Cinzel', serif, sans-serif;
+  color: #C1B7B8;
+  font-size: 18px;
+  letter-spacing: 2px;
+  margin: 0 0 8px 0;
+  font-weight: 200;
+}
+
+.ai-item-desc {
+  font-family: 'Esteban', serif;
+  font-size: 12px;
+  color: #888;
+  line-height: 1.5;
+  margin: 0;
+}
+
+
+/* --- ITEM POPUP MODAL --- */
+
+.ai-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(193, 183, 184, 0.1), transparent 45%),
+    rgba(5, 5, 5, 0.7);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3500;
+  animation: aiOverlayFadeIn 0.35s ease forwards;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.ai-modal-card {
+  width: min(520px, 100%);
+  background: linear-gradient(160deg, rgba(24, 24, 24, 0.97), rgba(16, 16, 16, 0.97));
+  border: 1px solid rgba(193, 183, 184, 0.25);
+  border-radius: 20px;
+  padding: 36px 28px 28px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(193, 183, 184, 0.08) inset;
+  color: #c1b7b8;
+  position: relative;
+  animation: aiModalRise 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: translateY(28px) scale(0.97);
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.ai-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(193, 183, 184, 0.35);
+  color: #c1b7b8;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-modal-close:hover {
+  background: #c1b7b8;
+  color: #141414;
+  transform: rotate(90deg);
+}
+
+.ai-modal-img {
+  width: 190px;
+  height: 190px;
+  object-fit: contain;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+}
+
+.ai-modal-title {
+  font-family: 'Cinzel', 'EUR42', serif;
+  font-size: 22px;
+  letter-spacing: 4px;
+  color: #ded2d3;
+  font-weight: 400;
+  margin: 0 0 14px;
+}
+
+.ai-modal-details {
+  font-family: 'Esteban', serif;
+  font-size: 13px;
+  color: #8f8788;
+  line-height: 1.7;
+  margin: 0 0 20px;
+}
+
+.ai-modal-meta {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(193, 183, 184, 0.15);
+  padding-top: 16px;
+  width: 100%;
+}
+
+.ai-modal-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.ai-modal-meta-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #b9afb0;
+}
+
+.ai-modal-meta-value {
+  font-family: 'Esteban', serif;
+  font-size: 13px;
+  color: #ded2d3;
+}
+
+@keyframes aiOverlayFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes aiModalRise {
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+
+/* --- RESPONSIVE --- */
+
+@media screen and (max-width: 1200px) {
+  .ai-navbar { padding: 15px 40px; }
+  .ai-nav-links { gap: 25px; }
+  .ai-bg-text { font-size: 80px; letter-spacing: 15px; }
+  .ai-grid { gap: 35px; }
+  .ai-item { width: 210px; }
+  .ai-item-img { width: 190px; height: 190px; }
+}
+
+@media screen and (max-width: 1024px) {
+  .ai-navbar { padding: 15px 30px; }
+  .ai-nav-links { gap: 15px; }
+  .ai-nav-item { font-size: 12px; }
+  .ai-navbar-logo { font-size: 22px; }
+  .ai-bg-text { font-size: 60px; letter-spacing: 10px; }
+  .ai-fg-text { font-size: 26px; }
+  .ai-grid { gap: 25px; }
+  .ai-item { width: 190px; }
+  .ai-item-img { width: 170px; height: 170px; }
+}
+
+@media screen and (max-width: 767px) {
+  .ai-navbar { padding: 15px 20px; }
+  .ai-nav-links { display: none; }
+  .ai-navbar-logo { font-size: 20px; }
+  .ai-section { padding: 110px 15px 70px; }
+  .ai-section-header { margin-bottom: 60px; }
+  .ai-bg-text { font-size: 14vw; letter-spacing: 5px; }
+  .ai-fg-text { font-size: 22px; }
+  .ai-grid { gap: 25px; }
+  .ai-item { width: calc(50% - 15px); min-width: 130px; }
+  .ai-item-img { width: 150px; height: 150px; }
+  .ai-item-title { font-size: 14px; }
+  .ai-modal-card { padding: 30px 18px 22px; }
+  .ai-modal-img { width: 150px; height: 150px; }
+  .ai-modal-title { font-size: 18px; letter-spacing: 3px; }
+}
+
+@media screen and (max-width: 480px) {
+  .ai-navbar { padding: 15px 16px; }
+  .ai-navbar-logo { font-size: 18px; }
+  .ai-profile-icon { font-size: 24px; }
+  .ai-item { width: 100%; max-width: 260px; }
+  .ai-item-img { width: 180px; height: 180px; }
+  .ai-bg-text { font-size: 18vw; }
+}
