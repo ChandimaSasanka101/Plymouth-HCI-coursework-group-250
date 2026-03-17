@@ -1,0 +1,106 @@
+/* Register.css */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Esteban&display=swap');
+
+.register-container {
+  min-height: 100vh;
+  background-color: #121212;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Esteban', serif;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.register-container .register-box {
+  background-color: rgba(20, 20, 20, 0.8);
+  padding: 50px 40px;
+  border-radius: 15px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(193, 183, 184, 0.1);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+}
+
+.register-container h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  color: #C1B7B8;
+  letter-spacing: 3px;
+  margin-bottom: 30px;
+  font-weight: 200;
+  margin-top: 0;
+}
+
+.register-container .input-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.register-container label {
+  display: block;
+  color: #888;
+  margin-bottom: 8px;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.register-container input {
+  width: 100%;
+  padding: 14px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(193, 183, 184, 0.2);
+  border-radius: 8px;
+  color: #C1B7B8;
+  font-family: 'Esteban', serif;
+  font-size: 15px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline: none;
+}
+
+.register-container input:focus {
+  border-color: #C1B7B8;
+  box-shadow: 0 0 10px rgba(193, 183, 184, 0.1);
+}
+
+.register-container .register-btn {
+  background-color: #C1B7B8;
+  color: #141414;
+  border: none;
+  width: 100%;
+  padding: 15px;
+  border-radius: 50px;
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 15px;
+}
+
+.register-container .register-btn:hover {
+  background-color: #DED2D3;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(214, 207, 199, 0.2);
+}
+
+.register-container .login-link {
+  margin-top: 25px;
+  color: #888;
+  font-size: 14px;
+}
+
+.register-container .login-link a {
+  color: #C1B7B8;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.register-container .login-link a:hover {
+  color: #fff;
+  text-decoration: underline;
+}

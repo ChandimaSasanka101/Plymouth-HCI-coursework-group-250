@@ -2,157 +2,212 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import UserDetailAPI from "../services/ProfileAPI";
 import { useNavigate } from "react-router-dom";
+import { FaTimes } from "react-icons/fa";
+import "./Profile.css";
 
-function Profile() {
+function Profile({ isOpen, onClose }) {
+  const navigate = useNavigate();
   const [userFirstName, setUserFirstName] = useState("");
   const [userLastName, setUserLastName] = useState("");
-  const [userEamil, setUserEmail] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [originalData, setOriginalData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const storedUserId = sessionStorage.getItem("userId");
-  //Get user data
-  const GetUserDetails = async () => {
+
+  const getUserDetails = async () => {
     if (!storedUserId) {
-      Swal.fire({
+      await Swal.fire({
         icon: "warning",
         title: "Login Required",
         text: "Please login to continue.",
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Go to Login",
-      }).then(async () => {
-        window.location.href = "./Login.jsx";
+        confirmButtonColor: "#C1B7B8",
+        background: "#1a1a1a",
+        color: "#DED2D3",
       });
+      onClose();
+      return;
     }
+
     try {
+      setLoading(true);
       const response = await UserDetailAPI.getUserDetails(storedUserId);
       if (response.success) {
-        setUserFirstName(response.firstName);
-        setUserLastName(response.lastName);
-        setUserEmail(response.email);
+        setUserFirstName(response.firstName || "");
+        setUserLastName(response.lastName || "");
+        setUserEmail(response.email || "");
         setOriginalData({
-          firstName: response.firstName,
-          lastName: response.lastName,
-          email: response.email,
+          firstName: response.firstName || "",
+          lastName: response.lastName || "",
+          email: response.email || "",
         });
       } else {
-        alert("Error in getting user data");
+        Swal.fire("Error", "Failed to load user data.", "error");
       }
     } catch (err) {
-      console.error("Failed to load userData", err);
+      console.error("Failed to load user data", err);
+      Swal.fire("Error", "Something went wrong while loading profile.", "error");
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
-    GetUserDetails();
-  }, []);
+    if (!isOpen) return;
+
+    getUserDetails();
+    const handleEsc = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    document.addEventListener("keydown", handleEsc);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen]);
+
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
-  //update user function
   const handleSubmit = async (e) => {
-    console.log("Edit user function hit");
     e.preventDefault();
+
+    if (!originalData) return;
+    if (
+      userFirstName === originalData.firstName &&
+      userLastName === originalData.lastName
+    ) {
+      Swal.fire(
+        "No Changes Detected",
+        "Please change at least one field before saving.",
+        "warning"
+      );
+      return;
+    }
+
     try {
-      if (
-        userFirstName === originalData.firstName &&
-        userLastName === originalData.lastName
-      ) {
-        Swal.fire(
-          "No Changes Detected",
-          "Please change at least one field before saving.",
-          "warning",
-        );
-        return;
-      }
       const newData = {
-        userFirstName,
-        userLastName,
+        firstName: userFirstName,
+        lastName: userLastName,
       };
       const response = await UserDetailAPI.updateUser(storedUserId, newData);
+
       if (response.success) {
         Swal.fire("Success", "User updated successfully", "success");
+        setOriginalData({
+          firstName: userFirstName,
+          lastName: userLastName,
+          email: userEmail,
+        });
         setIsEditing(false);
       } else {
-        Swal.fire("Error", response.message || "Update Failed", "error");
+        Swal.fire("Error", response.message || "Update failed", "error");
       }
     } catch (error) {
       console.error("Update Error:", error);
-      alert(`Error: ${error.message}`);
+      Swal.fire("Error", error.message || "Update failed", "error");
     }
   };
 
-  //cancel btn function
   const handleCancel = (e) => {
     e.preventDefault();
+    if (!originalData) return;
     setUserFirstName(originalData.firstName);
     setUserLastName(originalData.lastName);
     setUserEmail(originalData.email);
     setIsEditing(false);
   };
-  if (loading) return <p>Loading...</p>;
-  //handleBackBtn
-  const handleBackBtn = async () => {
-    navigate("/home");
+
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      title: "Logout?",
+      text: "You will need to login again to continue.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Logout",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#8b0000",
+      background: "#1a1a1a",
+      color: "#DED2D3",
+    });
+
+    if (!result.isConfirmed) return;
+
+    sessionStorage.removeItem("userId");
+    onClose();
+    navigate("/", { replace: true });
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div id="main-div">
-      <div>
-        <button className="back-btn" onClick={handleBackBtn}>
-          ← Back
+    <div className="profile-modal-overlay" onClick={onClose}>
+      <div className="profile-modal-card" onClick={(e) => e.stopPropagation()}>
+        <button className="profile-close-btn" onClick={onClose} aria-label="Close profile">
+          <FaTimes />
         </button>
-      </div>
-      <div>
-        <button onClick={handleEditClick}>Edit</button>
-      </div>
-      <div>
-        <form onSubmit={handleSubmit}>
-          <label>First Name</label>
-          <input
-            type="text"
-            value={userFirstName}
-            onChange={(e) => setUserFirstName(e.target.value)}
-            placeholder="FirstName"
-            required
-            readOnly={!isEditing}
-          />
-          <label>Last Name</label>
-          <input
-            type="text"
-            value={userLastName}
-            onChange={(e) => setUserLastName(e.target.value)}
-            placeholder="LastName"
-            required
-            readOnly={!isEditing}
-          />
-          <label>Email</label>
-          <input
-            type="email"
-            value={userEamil}
-            onChange={(e) => setUserEmail(e.target.value)}
-            readOnly
-            required
-          />
-          {isEditing && (
-            <div className="button-group">
-              <button
-                type="button"
-                className="cancel-btn"
-                onClick={handleCancel}
-              >
-                Cancel
+
+        <h2 className="profile-title">MY PROFILE</h2>
+        <p className="profile-subtitle">Manage your account details</p>
+
+        {loading ? (
+          <p className="profile-loading">Loading profile...</p>
+        ) : (
+          <form className="profile-form" onSubmit={handleSubmit}>
+            <label>First Name</label>
+            <input
+              type="text"
+              value={userFirstName}
+              onChange={(e) => setUserFirstName(e.target.value)}
+              placeholder="First Name"
+              required
+              readOnly={!isEditing}
+            />
+
+            <label>Last Name</label>
+            <input
+              type="text"
+              value={userLastName}
+              onChange={(e) => setUserLastName(e.target.value)}
+              placeholder="Last Name"
+              required
+              readOnly={!isEditing}
+            />
+
+            <label>Email</label>
+            <input type="email" value={userEmail} onChange={(e) => setUserEmail(e.target.value)} readOnly required />
+
+            {!isEditing ? (
+              <>
+                <button type="button" className="profile-main-btn" onClick={handleEditClick}>
+                  Edit Profile
+                </button>
+                <button type="button" className="profile-logout-btn" onClick={handleLogout}>
+                  Logout
+                </button>
+              </>
+            ) : (
+              <div className="profile-button-group">
+                <button type="button" className="profile-cancel-btn" onClick={handleCancel}>
+                  Cancel
+                </button>
+                <button type="submit" className="profile-save-btn">
+                  Save Changes
+                </button>
+              </div>
+            )}
+
+            {isEditing && (
+              <button type="button" className="profile-logout-btn" onClick={handleLogout}>
+                Logout
               </button>
-              <button type="submit" className="save-btn">
-                Save Changes
-              </button>
-            </div>
-          )}
-        </form>
+            )}
+          </form>
+        )}
       </div>
     </div>
   );

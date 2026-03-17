@@ -1,357 +1,410 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Html, Environment, SoftShadows, ContactShadows } from '@react-three/drei';
+import { OrbitControls, Html, Environment, ContactShadows } from '@react-three/drei';
+import { BsGrid3X3 } from 'react-icons/bs';
+import { BiCube } from 'react-icons/bi';
+import { FiSave } from 'react-icons/fi';
+import { HiOutlineArrowUturnLeft, HiOutlineArrowUturnRight } from 'react-icons/hi2';
+import {
+  MdBed,
+  MdChair,
+  MdDoorFront,
+  MdEventSeat,
+  MdLight,
+  MdTableBar,
+  MdTableRestaurant,
+  MdTv,
+  MdViewAgenda,
+  MdWeekend,
+} from 'react-icons/md';
 import DesignAPI from "../services/DesignAPI"
 import { useParams } from 'react-router-dom';
+import TopNav from '../components/TopNav';
+import { Chair, Table, Bed, Cupboard, Sofa, Nightstand, DressingTable, BeanBag, Lamp, TVStand, Rug } from './FurnitureComponents';
+import './Design.css';
 //  HELPER FUNCTIONS 
 
 // Brightness Adjustment Logic
 const adjustBrightness = (hex, percent) => {
-    let r = parseInt(hex.substring(1, 3), 16);
-    let g = parseInt(hex.substring(3, 5), 16);
-    let b = parseInt(hex.substring(5, 7), 16);
+  let r = parseInt(hex.substring(1, 3), 16);
+  let g = parseInt(hex.substring(3, 5), 16);
+  let b = parseInt(hex.substring(5, 7), 16);
 
-    r = parseInt(r * (100 + percent) / 100);
-    g = parseInt(g * (100 + percent) / 100);
-    b = parseInt(b * (100 + percent) / 100);
+  r = parseInt(r * (100 + percent) / 100);
+  g = parseInt(g * (100 + percent) / 100);
+  b = parseInt(b * (100 + percent) / 100);
 
-    r = (r < 255) ? r : 255;
-    g = (g < 255) ? g : 255;
-    b = (b < 255) ? b : 255;
+  r = (r < 255) ? r : 255;
+  g = (g < 255) ? g : 255;
+  b = (b < 255) ? b : 255;
 
-    const rr = ((r.toString(16).length === 1) ? "0" + r.toString(16) : r.toString(16));
-    const gg = ((g.toString(16).length === 1) ? "0" + g.toString(16) : g.toString(16));
-    const bb = ((b.toString(16).length === 1) ? "0" + b.toString(16) : b.toString(16));
+  const rr = ((r.toString(16).length === 1) ? "0" + r.toString(16) : r.toString(16));
+  const gg = ((g.toString(16).length === 1) ? "0" + g.toString(16) : g.toString(16));
+  const bb = ((b.toString(16).length === 1) ? "0" + b.toString(16) : b.toString(16));
 
-    return "#" + rr + gg + bb;
+  return "#" + rr + gg + bb;
 }
 
-//  FURNITURE COMPONENTS (3D Models) 
-const Chair = ({ w, d, h, color }) => {
-  const seatH = h * 0.45;
-  const legThick = 0.05;
-  
-  return (
-    <group>
-      {/* Modern Legs: Chrome Finish */}
-      <mesh position={[-(w/2)+legThick, seatH/2, -(d/2)+legThick]} castShadow receiveShadow>
-        <cylinderGeometry args={[legThick, 0.02, seatH, 32]} />
-        <meshStandardMaterial color="#222" metalness={1} roughness={0.2} />
-      </mesh>
-      <mesh position={[(w/2)-legThick, seatH/2, -(d/2)+legThick]} castShadow receiveShadow>
-        <cylinderGeometry args={[legThick, 0.02, seatH, 32]} />
-        <meshStandardMaterial color="#222" metalness={1} roughness={0.2} />
-      </mesh>
-      <mesh position={[-(w/2)+legThick, seatH/2, (d/2)-legThick]} castShadow receiveShadow>
-        <cylinderGeometry args={[legThick, 0.02, seatH, 32]} />
-        <meshStandardMaterial color="#222" metalness={1} roughness={0.2} />
-      </mesh>
-      <mesh position={[(w/2)-legThick, seatH/2, (d/2)-legThick]} castShadow receiveShadow>
-        <cylinderGeometry args={[legThick, 0.02, seatH, 32]} />
-        <meshStandardMaterial color="#222" metalness={1} roughness={0.2} />
-      </mesh>
-      
-      {/* Seat: Velvet Fabric Look (Sheen + Roughness) */}
-      <mesh position={[0, seatH, 0]} castShadow receiveShadow>
-        <boxGeometry args={[w, 0.15, d]} />
-        <meshPhysicalMaterial 
-            color={color} 
-            roughness={0.8} 
-            sheen={1} 
-            sheenColor="white" 
-            clearcoat={0}
-        /> 
-      </mesh>
-      
-      {/* Backrest: Rounded & Soft */}
-      <group position={[0, seatH + (h-seatH)/2, -(d/2) + 0.05]}>
-         <mesh castShadow receiveShadow>
-            <boxGeometry args={[w, h-seatH, 0.08]} />
-            <meshPhysicalMaterial 
-                color={color} 
-                roughness={0.8} 
-                sheen={1} 
-                sheenColor="white"
-            />
-         </mesh>
-      </group>
-    </group>
-  );
-};
 
-const Table = ({ w, d, h, color }) => {
-  const topThick = 0.05; 
-  return (
-    <group>
-      {/* Legs: Matte Black Steel */}
-      <mesh position={[-(w/2)+0.1, (h-topThick)/2, -(d/2)+0.1]} castShadow receiveShadow>
-        <boxGeometry args={[0.08, h-topThick, 0.08]} />
-        <meshStandardMaterial color="#1a1a1a" roughness={0.4} metalness={0.5} />
-      </mesh>
-      <mesh position={[(w/2)-0.1, (h-topThick)/2, -(d/2)+0.1]} castShadow receiveShadow>
-        <boxGeometry args={[0.08, h-topThick, 0.08]} />
-        <meshStandardMaterial color="#1a1a1a" roughness={0.4} metalness={0.5} />
-      </mesh>
-      <mesh position={[-(w/2)+0.1, (h-topThick)/2, (d/2)-0.1]} castShadow receiveShadow>
-        <boxGeometry args={[0.08, h-topThick, 0.08]} />
-        <meshStandardMaterial color="#1a1a1a" roughness={0.4} metalness={0.5} />
-      </mesh>
-      <mesh position={[(w/2)-0.1, (h-topThick)/2, (d/2)-0.1]} castShadow receiveShadow>
-        <boxGeometry args={[0.08, h-topThick, 0.08]} />
-        <meshStandardMaterial color="#1a1a1a" roughness={0.4} metalness={0.5} />
-      </mesh>
-      
-      {/* Support Beams */}
-      <mesh position={[0, h - topThick - 0.04, 0]} castShadow receiveShadow>
-        <boxGeometry args={[w-0.2, 0.04, d-0.2]} />
-        <meshStandardMaterial color="#1a1a1a" roughness={0.4} metalness={0.5} />
-      </mesh>
-
-      {/* TABLE TOP: REALISTIC TEMPERED GLASS */}
-      <mesh position={[0, h - topThick/2, 0]} castShadow receiveShadow>
-        <boxGeometry args={[w, topThick, d]} />
-        <meshPhysicalMaterial 
-            color={color} 
-            transmission={1}   // Fully transparent like glass
-            opacity={1} 
-            metalness={0} 
-            roughness={0}      // Perfectly smooth
-            ior={1.5}          // Index of Refraction for Glass
-            thickness={0.5}    // Refraction thickness
-            clearcoat={1}      // High polish
-            attenuationColor="#ffffff"
-            attenuationDistance={0.5}
-        />
-      </mesh>
-    </group>
-  );
-};
-
-const Bed = ({ w, d, h, color }) => {
-  const baseH = h * 0.25;
-  return (
-    <group>
-      {/* Base: Varnished Wood */}
-      <mesh position={[0, baseH/2, 0]} castShadow receiveShadow>
-        <boxGeometry args={[w, baseH, d]} />
-        <meshPhysicalMaterial 
-            color="#4e342e" 
-            roughness={0.5} 
-            clearcoat={0.5} // Polished wood look
-            clearcoatRoughness={0.1}
-        />
-      </mesh>
-      
-      {/* Mattress: Cloth Fabric */}
-      <mesh position={[0, baseH + 0.15, 0]} castShadow receiveShadow>
-          <boxGeometry args={[w * 0.95, 0.3, d * 0.95]} />
-          <meshStandardMaterial color="white" roughness={1} />
-      </mesh>
-      
-      {/* Duvet: Soft Fabric with Sheen */}
-      <mesh position={[0, baseH + 0.17, 0.2]} castShadow receiveShadow>
-          <boxGeometry args={[w * 0.96, 0.28, d * 0.7]} />
-          <meshPhysicalMaterial 
-            color={color} 
-            roughness={0.9} 
-            sheen={0.5}
-            sheenColor="white"
-          />
-      </mesh>
-
-      {/* Pillows */}
-      <mesh position={[-w*0.25, h*0.4, -d*0.35]} rotation={[0.2, 0, 0]} castShadow receiveShadow>
-         <boxGeometry args={[w*0.35, 0.15, 0.5]} />
-         <meshStandardMaterial color="#f5f5f5" roughness={1} />
-      </mesh>
-      <mesh position={[w*0.25, h*0.4, -d*0.35]} rotation={[0.2, 0, 0]} castShadow receiveShadow>
-         <boxGeometry args={[w*0.35, 0.15, 0.5]} />
-         <meshStandardMaterial color="#f5f5f5" roughness={1} />
-      </mesh>
-      
-      {/* Headboard: Leather/Tufted look */}
-      <group position={[0, h*0.6, -d/2 + 0.05]}>
-        <mesh castShadow receiveShadow>
-            <boxGeometry args={[w, h, 0.15]} />
-            <meshPhysicalMaterial 
-                color="#3e2723" 
-                roughness={0.4} 
-                metalness={0.1}
-            />
-        </mesh>
-      </group>
-    </group>
-  );
-};
-
-const Cupboard = ({ w, d, h, color }) => {
-  return (
-    <group>
-      {/* Body: High Gloss Automotive Paint Look */}
-      <mesh position={[0, h/2, 0]} castShadow receiveShadow>
-        <boxGeometry args={[w, h, d]} />
-        <meshPhysicalMaterial 
-            color={color} 
-            metalness={0} 
-            roughness={0.1} 
-            clearcoat={1} // Super shiny varnish layer
-            clearcoatRoughness={0.05}
-        />
-      </mesh>
-      
-      {/* Handles: Brushed Metal */}
-      <mesh position={[w*0.15, h/2, d/2 + 0.05]} castShadow receiveShadow>
-         <boxGeometry args={[0.03, h*0.5, 0.05]} />
-         <meshStandardMaterial color="#aaaaaa" metalness={0.9} roughness={0.3} />
-      </mesh>
-      <mesh position={[-w*0.15, h/2, d/2 + 0.05]} castShadow receiveShadow>
-         <boxGeometry args={[0.03, h*0.5, 0.05]} />
-         <meshStandardMaterial color="#aaaaaa" metalness={0.9} roughness={0.3} />
-      </mesh>
-    </group>
-  );
-};
 
 // --- DATA ---
-
 const FURNITURE_TYPES = [
-  { name: 'Chair', w: 0.8, d: 0.8, h: 1.5, color: '#ff6b6b' },
-  { name: 'Table', w: 3, d: 2, h: 1.2, color: '#4ecdc4' },
-  { name: 'Bed', w: 4, d: 5, h: 1, color: '#1a535c' },
-  { name: 'Cupboard', w: 2, d: 1, h: 4, color: '#ffe66d' },
+  { name: 'Chair', icon: MdChair, w: 0.85, d: 0.85, h: 1.45, color: '#b39a86' },
+  { name: 'Table', icon: MdTableRestaurant, w: 2.6, d: 1.4, h: 1.1, color: '#9b866f' },
+  { name: 'Bed', icon: MdBed, w: 4.2, d: 5.2, h: 1.05, color: '#c7b7a3' },
+  { name: 'Cupboard', icon: MdDoorFront, w: 2.2, d: 1.0, h: 4.1, color: '#d8d0c4' },
+  { name: 'Sofa', icon: MdWeekend, w: 3.6, d: 1.4, h: 1.35, color: '#a7907a' },
+  { name: 'Nightstand', icon: MdTableBar, w: 1.0, d: 0.85, h: 1.45, color: '#8d775f' },
+  { name: 'DressingTable', icon: MdTableBar, w: 2.4, d: 1.0, h: 2.2, color: '#b8a18a' },
+  { name: 'BeanBag', icon: MdEventSeat, w: 1.8, d: 1.8, h: 1.2, color: '#7f8b7a' },
+  { name: 'Lamp', icon: MdLight, w: 0.55, d: 0.55, h: 2.8, color: '#d9d2c4' },
+  { name: 'TVStand', icon: MdTv, w: 3.4, d: 0.95, h: 1.7, color: '#6f6257' },
+  { name: 'Rug', icon: MdViewAgenda, w: 4.5, d: 3.0, h: 0.01, color: '#9e8b7e' },
 ];
 
+const ROOM_SHAPE_OPTIONS = [
+  { id: 'rectangle', label: 'Rectangle' },
+  { id: 'l-shape', label: 'L-Shape' },
+  { id: 'l-shape-mirror', label: 'L-Shape (Mirror)' },
+  { id: 'l-shape-bottom-left', label: 'L-Shape (Bottom Left)' },
+  { id: 'l-shape-bottom-right', label: 'L-Shape (Bottom Right)' },
+  { id: 'u-shape', label: 'U-Shape' },
+];
+
+const getRoomClipPath = (shape) => {
+  if (shape === 'l-shape') return 'polygon(0% 0%, 50% 0%, 50% 50%, 100% 50%, 100% 100%, 0% 100%)';
+  if (shape === 'l-shape-mirror') return 'polygon(50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%, 50% 50%)';
+  if (shape === 'l-shape-bottom-left') return 'polygon(0% 0%, 100% 0%, 100% 100%, 50% 100%, 50% 50%, 0% 50%)';
+  if (shape === 'l-shape-bottom-right') return 'polygon(0% 0%, 100% 0%, 100% 50%, 50% 50%, 50% 100%, 0% 100%)';
+  if (shape === 'u-shape') return 'polygon(0% 0%, 25% 0%, 25% 50%, 75% 50%, 75% 0%, 100% 0%, 100% 100%, 0% 100%)';
+  return 'none';
+};
+
+const getRoomShapeMeshes = (shape, width, depth) => {
+  switch (shape) {
+    case 'l-shape':
+      return {
+        floors: [
+          { x: width / 2, z: depth * 0.75, w: width, d: depth / 2 },
+          { x: width / 4, z: depth / 4, w: width / 2, d: depth / 2 },
+        ],
+        walls: [
+          { x: width / 4, z: 0, w: width / 2, d: 0.2 },
+          { x: width / 2, z: depth / 4, w: 0.2, d: depth / 2 },
+          { x: width * 0.75, z: depth / 2, w: width / 2, d: 0.2 },
+          { x: 0, z: depth / 2, w: 0.2, d: depth },
+        ],
+      };
+    case 'l-shape-mirror':
+      return {
+        floors: [
+          { x: width / 2, z: depth * 0.75, w: width, d: depth / 2 },
+          { x: width * 0.75, z: depth / 4, w: width / 2, d: depth / 2 },
+        ],
+        walls: [
+          { x: width * 0.75, z: 0, w: width / 2, d: 0.2 },
+          { x: width / 2, z: depth / 4, w: 0.2, d: depth / 2 },
+          { x: width / 4, z: depth / 2, w: width / 2, d: 0.2 },
+          { x: 0, z: depth * 0.75, w: 0.2, d: depth / 2 },
+        ],
+      };
+    case 'l-shape-bottom-left':
+      return {
+        floors: [
+          { x: width / 2, z: depth / 4, w: width, d: depth / 2 },
+          { x: width * 0.75, z: depth * 0.75, w: width / 2, d: depth / 2 },
+        ],
+        walls: [
+          { x: width / 2, z: 0, w: width, d: 0.2 },
+          { x: 0, z: depth / 4, w: 0.2, d: depth / 2 },
+          { x: width / 4, z: depth / 2, w: width / 2, d: 0.2 },
+          { x: width / 2, z: depth * 0.75, w: 0.2, d: depth / 2 },
+        ],
+      };
+    case 'l-shape-bottom-right':
+      return {
+        floors: [
+          { x: width / 2, z: depth / 4, w: width, d: depth / 2 },
+          { x: width / 4, z: depth * 0.75, w: width / 2, d: depth / 2 },
+        ],
+        walls: [
+          { x: width / 2, z: 0, w: width, d: 0.2 },
+          { x: 0, z: depth / 2, w: 0.2, d: depth },
+          { x: width * 0.75, z: depth / 2, w: width / 2, d: 0.2 },
+          { x: width / 2, z: depth * 0.75, w: 0.2, d: depth / 2 },
+        ],
+      };
+    case 'u-shape':
+      return {
+        floors: [
+          { x: width / 2, z: depth * 0.75, w: width, d: depth / 2 },
+          { x: width / 8, z: depth / 4, w: width / 4, d: depth / 2 },
+          { x: width * 0.875, z: depth / 4, w: width / 4, d: depth / 2 },
+        ],
+        walls: [
+          { x: width / 8, z: 0, w: width / 4, d: 0.2 },
+          { x: width * 0.875, z: 0, w: width / 4, d: 0.2 },
+          { x: 0, z: depth / 2, w: 0.2, d: depth },
+          { x: width / 4, z: depth / 4, w: 0.2, d: depth / 2 },
+          { x: width / 2, z: depth / 2, w: width / 2, d: 0.2 },
+          { x: width * 0.75, z: depth / 4, w: 0.2, d: depth / 2 },
+        ],
+      };
+    default:
+      return {
+        floors: [{ x: width / 2, z: depth / 2, w: width, d: depth }],
+        walls: [
+          { x: width / 2, z: 0, w: width, d: 0.2 },
+          { x: 0, z: depth / 2, w: 0.2, d: depth },
+        ],
+      };
+  }
+};
+
+const isPointInsideRoomShape = (shape, width, depth, x, z) => {
+  if (x < 0 || z < 0 || x > width || z > depth) return false;
+
+  switch (shape) {
+    case 'l-shape':
+      return z >= depth / 2 || x <= width / 2;
+    case 'l-shape-mirror':
+      return z >= depth / 2 || x >= width / 2;
+    case 'l-shape-bottom-left':
+      return z <= depth / 2 || x >= width / 2;
+    case 'l-shape-bottom-right':
+      return z <= depth / 2 || x <= width / 2;
+    case 'u-shape':
+      return z >= depth / 2 || x <= width / 4 || x >= width * 0.75;
+    default:
+      return true;
+  }
+};
+
+const isPlacementInsideRoomShape = (shape, width, depth, x, z, itemWidth, itemDepth) => {
+  const epsilon = 0.0001;
+
+  return [
+    [x + epsilon, z + epsilon],
+    [x + itemWidth - epsilon, z + epsilon],
+    [x + epsilon, z + itemDepth - epsilon],
+    [x + itemWidth - epsilon, z + itemDepth - epsilon],
+  ].every(([pointX, pointZ]) => isPointInsideRoomShape(shape, width, depth, pointX, pointZ));
+};
+
+const ROOM_SIZE_PRESETS = [
+  { id: 'custom', label: 'Custom Size', width: 12, depth: 12 },
+  { id: 'compact-square', label: 'Compact Square (10 x 10 ft)', width: 10, depth: 10 },
+  { id: 'compact-rect', label: 'Compact Rectangle (10 x 12 ft)', width: 10, depth: 12 },
+  { id: 'medium-square', label: 'Medium Square (12 x 12 ft)', width: 12, depth: 12 },
+  { id: 'medium-rect', label: 'Medium Rectangle (12 x 14 ft)', width: 12, depth: 14 },
+  { id: 'large-rect', label: 'Large Rectangle (14 x 16 ft)', width: 14, depth: 16 },
+  { id: 'master-suite', label: 'Master Suite (16 x 18 ft)', width: 16, depth: 18 },
+  { id: 'studio-loft', label: 'Studio Loft (18 x 20 ft)', width: 18, depth: 20 },
+];
+
+
 function Design() {
-    
 
-    const [roomConfig, setRoomConfig] = useState({ 
-        width: 12, depth: 12, 
-        wallColor: '#eeeeee', floorColor: '#cccccc',
-        globalShade: 0.8 
-      });
-      
-    const [items, setItems] = useState([]);
-    
-    // Undo/Redo History States
-    const [history, setHistory] = useState([[]]); // Stores array of 'items' arrays
-    const [historyIndex, setHistoryIndex] = useState(0);
-    
-    const [selectedId, setSelectedId] = useState(null);
-    const [viewMode, setViewMode] = useState('2D');
-    const [dragItem, setDragItem] = useState(null);
-    const [dragOffset, setDragOffset] = useState({ x: 0, z: 0 });
-    const [notification, setNotification] = useState(null); // Feedback message
-    const roomRef = useRef(null);
-    const [designName, setDesignName] = useState("");
-    const { id } = useParams();
 
-    useEffect(() => {
-        const loadDesignIfEditing = async () => {
-        // Only run if there is an ID in the URL
-            if (id) {
-                console.log("Edit Mode: Fetching design", id);
+  const [roomConfig, setRoomConfig] = useState({
+    width: 12, depth: 12,
+    wallColor: '#eeeeee', floorColor: '#cccccc',
+    globalShade: 0.8,
+    roomShape: 'rectangle'
+  });
+  const [selectedRoomPreset, setSelectedRoomPreset] = useState('custom');
 
-                // 1. Call API
-                const response = await DesignAPI.seletedDesign(id);
+  const [items, setItems] = useState([]);
 
-                // 2. Check Response
-                if (response.success && response.data) {
-                const loadedData = response.data;
+  // Undo/Redo History States
+  const [history, setHistory] = useState([[]]); // Stores array of 'items' arrays
+  const [historyIndex, setHistoryIndex] = useState(0);
 
-                // 3. Load Data into State
-                setItems(loadedData.items || []);
-                
-                if (loadedData.roomConfig) {
-                    setRoomConfig(loadedData.roomConfig);
-                }
+  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [viewMode, setViewMode] = useState('2D');
+  const [dragItem, setDragItem] = useState(null);
+  const [dragOffset, setDragOffset] = useState({ x: 0, z: 0 });
+  const [notification, setNotification] = useState(null); // Feedback message
+  const [copiedItems, setCopiedItems] = useState([]);
+  const roomRef = useRef(null);
+  const dragStartPositionsRef = useRef({});
+  const dragBlockedReasonRef = useRef(null);
+  const nextItemIdRef = useRef(1);
+  const [designName, setDesignName] = useState("");
+  const { id } = useParams();
 
-                // SAVE THE NAME TO STATE
-                setDesignName(loadedData.name);
-                
-                showNotification("Design Loaded! 📂");
-                } else {
-                showNotification("Error loading design ❌");
-                }
+  const handleRoomPresetChange = (presetId) => {
+    const selectedPreset = ROOM_SIZE_PRESETS.find((preset) => preset.id === presetId);
+    if (!selectedPreset) return;
+
+    setSelectedRoomPreset(presetId);
+    if (presetId !== 'custom') {
+      setRoomConfig((prev) => ({
+        ...prev,
+        width: selectedPreset.width,
+        depth: selectedPreset.depth,
+      }));
+    }
+  };
+
+  function showNotification(msg) {
+    setNotification(msg);
+    setTimeout(() => setNotification(null), 2000);
+  }
+
+  function showPlacementAlert(msg) {
+    showNotification(msg);
+    window.alert(msg);
+  }
+
+  const getValidItemPosition = (type) => {
+    const candidatePositions = [
+      { x: roomConfig.width / 2 - type.w / 2, z: roomConfig.depth / 2 - type.d / 2 },
+      { x: roomConfig.width / 2 - type.w / 2, z: roomConfig.depth * 0.75 - type.d / 2 },
+      { x: roomConfig.width / 2 - type.w / 2, z: roomConfig.depth * 0.25 - type.d / 2 },
+      { x: roomConfig.width * 0.25 - type.w / 2, z: roomConfig.depth / 2 - type.d / 2 },
+      { x: roomConfig.width * 0.75 - type.w / 2, z: roomConfig.depth / 2 - type.d / 2 },
+      { x: roomConfig.width * 0.25 - type.w / 2, z: roomConfig.depth * 0.75 - type.d / 2 },
+      { x: roomConfig.width * 0.75 - type.w / 2, z: roomConfig.depth * 0.75 - type.d / 2 },
+    ];
+
+    return candidatePositions
+      .map((position) => ({
+        x: Math.max(0, Math.min(position.x, roomConfig.width - type.w)),
+        z: Math.max(0, Math.min(position.z, roomConfig.depth - type.d)),
+      }))
+      .find(
+        (position) =>
+          isPlacementInsideRoomShape(
+            roomConfig.roomShape,
+            roomConfig.width,
+            roomConfig.depth,
+            position.x,
+            position.z,
+            type.w,
+            type.d,
+          ) && !checkCollision(null, position.x, position.z, type.w, type.d)
+      );
+  };
+
+  
+
+  useEffect(() => {
+    const loadDesignIfEditing = async () => {
+      // Only run if there is an ID in the URL
+      if (id) {
+        console.log("Edit Mode: Fetching design", id);
+
+        // 1. Call API
+        const response = await DesignAPI.seletedDesign(id);
+
+        // 2. Check Response
+        if (response.success && response.data) {
+          const loadedData = response.data;
+
+          // 3. Load Data into State
+          setItems(loadedData.items || []);
+
+          const loadedIds = (loadedData.items || [])
+            .map((item) => Number(item.id))
+            .filter((value) => Number.isFinite(value));
+          nextItemIdRef.current = loadedIds.length ? Math.max(...loadedIds) + 1 : 1;
+
+          if (loadedData.roomConfig) {
+            setRoomConfig({ roomShape: 'rectangle', ...loadedData.roomConfig });
+
+            const matchedPreset = ROOM_SIZE_PRESETS.find(
+              (preset) =>
+                preset.width === loadedData.roomConfig.width &&
+                preset.depth === loadedData.roomConfig.depth
+            );
+
+            if (matchedPreset) {
+              setSelectedRoomPreset(matchedPreset.id);
             }
-        };
-        loadDesignIfEditing();
-    }, [id]);
-    
-    // --- COLLISION DETECTION HELPER ---
-    const checkCollision = (id, x, z, w, d) => {
-        for (let item of items) {
-        if (item.id === id) continue; // Stop checking in with yourself.
+          }
 
-        // Axis-Aligned Bounding Box (AABB) Collision Logic
-        // Checks if two items overlap using a mathematical method
-        if (
-            x < item.x + item.w &&
-            x + w > item.x &&
-            z < item.z + item.d &&
-            z + d > item.z
-        ) {
-            return true; // Collision detected!
-        }
-        }
-        return false; // No collision
-    };
+          // SAVE THE NAME TO STATE
+          setDesignName(loadedData.name);
 
-    // Helper to save state to history
-    const saveToHistory = (newItems) => {
-        const newHistory = history.slice(0, historyIndex + 1); // Remove future if we were in past
-        newHistory.push(newItems);
-        setHistory(newHistory);
-        setHistoryIndex(newHistory.length - 1);
-        setItems(newItems);
-    };
- 
-    // UNDO Function
-    const handleUndo = () => {
-        if (historyIndex > 0) {
-        setHistoryIndex(historyIndex - 1);
-        setItems(history[historyIndex - 1]);
-        showNotification("Action Undone");
+          showNotification("Design loaded");
+        } else {
+          showNotification("Error loading design");
         }
+      }
     };
+    loadDesignIfEditing();
+  }, [id]);
 
-    // REDO Function
-    const handleRedo = () => {
-        if (historyIndex < history.length - 1) {
-        setHistoryIndex(historyIndex + 1);
-        setItems(history[historyIndex + 1]);
-        showNotification("Action Redone");
-        }
-    };
+  // --- COLLISION DETECTION HELPER ---
+  const checkCollision = (id, x, z, w, d) => {
+    for (let item of items) {
+      if (item.id === id) continue; // Stop checking in with yourself.
 
-    // Feedback Notification
-    const showNotification = (msg) => {
-        setNotification(msg);
-        setTimeout(() => setNotification(null), 2000);
-    };
-    
-    // Simulate Save to Database (Local Storage for now)
-    const handleSaveDesign = async () => {
+      // Axis-Aligned Bounding Box (AABB) Collision Logic
+      // Checks if two items overlap using a mathematical method
+      if (
+        x < item.x + item.w &&
+        x + w > item.x &&
+        z < item.z + item.d &&
+        z + d > item.z
+      ) {
+        return true; // Collision detected!
+      }
+    }
+    return false; // No collision
+  };
+
+  // Helper to save state to history
+  const saveToHistory = (newItems) => {
+    const newHistory = history.slice(0, historyIndex + 1); // Remove future if we were in past
+    newHistory.push(newItems);
+    setHistory(newHistory);
+    setHistoryIndex(newHistory.length - 1);
+    setItems(newItems);
+  };
+
+  // UNDO Function
+  const handleUndo = () => {
+    if (historyIndex > 0) {
+      setHistoryIndex(historyIndex - 1);
+      setItems(history[historyIndex - 1]);
+      showNotification("Action Undone");
+    }
+  };
+
+  // REDO Function
+  const handleRedo = () => {
+    if (historyIndex < history.length - 1) {
+      setHistoryIndex(historyIndex + 1);
+      setItems(history[historyIndex + 1]);
+      showNotification("Action Redone");
+    }
+  };
+
+  // Simulate Save to Database (Local Storage for now)
+  const handleSaveDesign = async () => {
     const storedUserId = sessionStorage.getItem("userId");
 
     if (!storedUserId) {
-      alert("Please log in to save your design! 🔒");
+      alert("Please log in to save your design.");
       return;
     }
 
     const nameInput = window.prompt("Please enter a name for your design:", designName);
 
     // Handle Cancel button
-    if (nameInput === null) return; 
+    if (nameInput === null) return;
 
     //Calculate final name
     const finalName = nameInput.trim() || `Untitled ${new Date().toLocaleDateString()}`;
-    
+
     // Update State 
-    setDesignName(finalName); 
+    setDesignName(finalName);
 
     const designPayload = {
       userId: storedUserId,
-      name: finalName, 
+      name: finalName,
       roomConfig: roomConfig,
       items: items
     };
@@ -363,7 +416,7 @@ function Design() {
     if (id) {
       //update existing
       console.log("Updating existing design:", id);
-      result = await DesignAPI.updateDesign(id, designPayload); 
+      result = await DesignAPI.updateDesign(id, designPayload);
     } else {
       // create new
       console.log("Creating new design");
@@ -377,328 +430,554 @@ function Design() {
     }
   };
 
-    const addItem = (type) => {
-        const newItem = {
-        id: Date.now(),
-        type: type.name,
-        x: roomConfig.width / 2 - type.w / 2,
-        z: roomConfig.depth / 2 - type.d / 2,
-        w: type.w, d: type.d, h: type.h,
-        color: type.color,
-        rotation: 0 
-        };
-        const newItems = [...items, newItem];
-        saveToHistory(newItems); // Push to history
-        setSelectedId(newItem.id);
-    };
-    const updateSelectedItem = (key, value) => {
-        const newItems = items.map(item => item.id === selectedId ? { ...item, [key]: value } : item);
-        saveToHistory(newItems); // Push to history on change
-    };
-
-    const deleteSelectedItem = () => {
-        const newItems = items.filter(i => i.id !== selectedId);
-        saveToHistory(newItems);
-        setSelectedId(null);
-        showNotification("Item Deleted 🗑️");
+  const addItem = (type) => {
+    const validPosition = getValidItemPosition(type);
+    if (!validPosition) {
+      showPlacementAlert("Furniture items cannot be placed on top of each other.");
+      return;
     }
 
-    const handleShadeChange = (amount) => {
-        const item = items.find(i => i.id === selectedId);
-        if(item) {
-            const newColor = adjustBrightness(item.color, amount);
-            updateSelectedItem('color', newColor);
+    const newItem = {
+      id: nextItemIdRef.current++,
+      type: type.name,
+      x: validPosition.x,
+      z: validPosition.z,
+      w: type.w, d: type.d, h: type.h,
+      color: type.color,
+      rotation: 0
+    };
+    const newItems = [...items, newItem];
+    saveToHistory(newItems); // Push to history
+      setSelectedIds(new Set([newItem.id]));
+  };
+  const updateSelectedItem = (key, value) => {
+     const focusedId = selectedIds.size === 1 ? [...selectedIds][0] : null;
+     if (!focusedId) return;
+     const newItems = items.map(item => item.id === focusedId ? { ...item, [key]: value } : item);
+     saveToHistory(newItems);
+  };
+
+  const deleteSelectedItem = () => {
+     if (selectedIds.size === 0) return;
+     const count = selectedIds.size;
+     const newItems = items.filter(i => !selectedIds.has(i.id));
+    saveToHistory(newItems);
+     setSelectedIds(new Set());
+     showNotification(count > 1 ? `${count} items deleted` : "Item deleted");
+  }
+
+  const handleCopySelectedItem = () => {
+      if (selectedIds.size === 0) {
+        showNotification("Select items to copy");
+      return;
+    }
+      const toCopy = items.filter(i => selectedIds.has(i.id));
+      setCopiedItems(toCopy.map(i => ({ ...i })));
+      showNotification(toCopy.length > 1 ? `${toCopy.length} items copied` : "Item copied");
+  };
+
+  const handlePasteItem = () => {
+      if (!copiedItems || copiedItems.length === 0) {
+        showNotification("Nothing to paste");
+      return;
+    }
+      let placed = null;
+      for (let step = 1; step <= 25; step++) {
+        const offset = step * 0.5;
+        const candidates = copiedItems.map(item => ({
+          ...item,
+          x: Math.max(0, Math.min(item.x + offset, roomConfig.width - item.w)),
+          z: Math.max(0, Math.min(item.z + offset, roomConfig.depth - item.d)),
+        }));
+        const allFit = candidates.every(candidate => {
+          if (!isPlacementInsideRoomShape(roomConfig.roomShape, roomConfig.width, roomConfig.depth, candidate.x, candidate.z, candidate.w, candidate.d)) {
+            return false;
+          }
+          for (const existing of items) {
+            if (
+              candidate.x < existing.x + existing.w && candidate.x + candidate.w > existing.x &&
+              candidate.z < existing.z + existing.d && candidate.z + candidate.d > existing.z
+            ) return false;
+          }
+          for (const other of candidates) {
+            if (other === candidate) continue;
+            if (
+              candidate.x < other.x + other.w && candidate.x + candidate.w > other.x &&
+              candidate.z < other.z + other.d && candidate.z + candidate.d > other.z
+            ) return false;
+          }
+          return true;
+        });
+        if (allFit) { placed = candidates; break; }
+      }
+      if (!placed) {
+        showPlacementAlert("Furniture items cannot be placed on top of each other.");
+        return;
+      }
+      const newPastedItems = placed.map(item => ({ ...item, id: nextItemIdRef.current++ }));
+      const newItems = [...items, ...newPastedItems];
+    saveToHistory(newItems);
+      setSelectedIds(new Set(newPastedItems.map(i => i.id)));
+      showNotification(newPastedItems.length > 1 ? `${newPastedItems.length} items pasted` : "Item pasted");
+  };
+
+  const handleShadeChange = (amount) => {
+      const focusedId = selectedIds.size === 1 ? [...selectedIds][0] : null;
+      const item = items.find(i => i.id === focusedId);
+      if (focusedId && item) {
+      const newColor = adjustBrightness(item.color, amount);
+      updateSelectedItem('color', newColor);
+    }
+  }
+
+  const handleMouseDown = (e, item) => {
+    e.stopPropagation();
+    if (!roomRef.current) return;
+    const container = roomRef.current.getBoundingClientRect();
+    const mouseX = (e.clientX - container.left) / 40;
+    const mouseZ = (e.clientY - container.top) / 40;
+
+      let newSelectedIds;
+      let shouldDrag = true;
+
+      if (e.ctrlKey || e.metaKey || e.shiftKey) {
+        newSelectedIds = new Set(selectedIds);
+        if (newSelectedIds.has(item.id)) {
+          newSelectedIds.delete(item.id);
+          shouldDrag = false;
+        } else {
+          newSelectedIds.add(item.id);
         }
-    }
+      } else {
+        newSelectedIds = selectedIds.has(item.id) ? selectedIds : new Set([item.id]);
+      }
 
-    const handleMouseDown = (e, item) => {
-        e.stopPropagation();
-        if (!roomRef.current) return;
-        const container = roomRef.current.getBoundingClientRect();
-        const mouseX = (e.clientX - container.left) / 40;
-        const mouseZ = (e.clientY - container.top) / 40;
+      setSelectedIds(newSelectedIds);
+
+      if (shouldDrag) {
+        const startPositions = {};
+        for (const i of items) {
+          if (newSelectedIds.has(i.id)) startPositions[i.id] = { x: i.x, z: i.z };
+        }
+        dragStartPositionsRef.current = startPositions;
+        dragBlockedReasonRef.current = null;
         setDragOffset({ x: mouseX - item.x, z: mouseZ - item.z });
-        setSelectedId(item.id);
         setDragItem(item.id);
-    };
-    const handleMouseMove = (e) => {
+      }
+  };
+  const handleMouseMove = (e) => {
     if (!dragItem || viewMode !== '2D' || !roomRef.current) return;
-    
-        const container = roomRef.current.getBoundingClientRect();
-        const mouseX = (e.clientX - container.left) / 40;
-        const mouseZ = (e.clientY - container.top) / 40;
-        
-        const activeItem = items.find(i => i.id === dragItem);
-    
-        if(activeItem) {
-            let newX = mouseX - dragOffset.x;
-            let newZ = mouseZ - dragOffset.z;
-            
-            // 1. Stops the room from going beyond the walls (Boundary Check)
-            newX = Math.max(0, Math.min(newX, roomConfig.width - activeItem.w));
-            newZ = Math.max(0, Math.min(newZ, roomConfig.depth - activeItem.d));
 
-            // 2. Stops items from overlapping (Collision Check)
-            // We check if moving to the new position causes a collision. If it does, we don't allow the move.
-            
-            // Check if moving only in the X direction causes a collision
-            const isCollidingX = checkCollision(activeItem.id, newX, activeItem.z, activeItem.w, activeItem.d);
-            // Check if moving only in the Z direction causes a collision
-            const isCollidingZ = checkCollision(activeItem.id, activeItem.x, newZ, activeItem.w, activeItem.d);
-            // Check if moving in both X and Z directions causes a collision
-            const isCollidingBoth = checkCollision(activeItem.id, newX, newZ, activeItem.w, activeItem.d);
+    const container = roomRef.current.getBoundingClientRect();
+    const mouseX = (e.clientX - container.left) / 40;
+    const mouseZ = (e.clientY - container.top) / 40;
 
-            let finalX = activeItem.x;
-            let finalZ = activeItem.z;
+      const startPositions = dragStartPositionsRef.current;
+      const anchorStart = startPositions[dragItem];
+      if (!anchorStart) return;
 
-            // Collision Logic: Allows movement only in the non-colliding direction (Gliding effect)
-            if (!isCollidingBoth) {
-                finalX = newX;
-                finalZ = newZ;
-            } else {
-                if (!isCollidingX) finalX = newX; // If no collision on X, update X
-                if (!isCollidingZ) finalZ = newZ; // If no collision on Z, update Z
-            }
-            
-            // Update state directly
-            setItems(items.map(i => i.id === dragItem ? { ...i, x: finalX, z: finalZ } : i));
+      const desiredX = mouseX - dragOffset.x;
+      const desiredZ = mouseZ - dragOffset.z;
+      let deltaX = desiredX - anchorStart.x;
+      let deltaZ = desiredZ - anchorStart.z;
+
+      const selectedItemsList = items.filter(i => selectedIds.has(i.id));
+
+      // Clamp delta so every selected item stays within room bounds
+      for (const sel of selectedItemsList) {
+        const start = startPositions[sel.id];
+        if (!start) continue;
+        deltaX = Math.max(-start.x, Math.min(roomConfig.width - sel.w - start.x, deltaX));
+        deltaZ = Math.max(-start.z, Math.min(roomConfig.depth - sel.d - start.z, deltaZ));
+      }
+
+      // Collision: only test selected items against non-selected items
+      const collidesWithFixed = (x, z, w, d) => {
+        for (const it of items) {
+          if (selectedIds.has(it.id)) continue;
+          if (x < it.x + it.w && x + w > it.x && z < it.z + it.d && z + d > it.z) return true;
         }
+        return false;
+      };
+
+      const buildCandidates = (dx, dz) => selectedItemsList.map(sel => {
+        const start = startPositions[sel.id];
+        return { id: sel.id, x: start ? start.x + dx : sel.x, z: start ? start.z + dz : sel.z, w: sel.w, d: sel.d };
+      });
+      const anyCollision = (candidates) => candidates.some(c => collidesWithFixed(c.x, c.z, c.w, c.d));
+      const anyOutsideShape = (candidates) => candidates.some(c => !isPlacementInsideRoomShape(roomConfig.roomShape, roomConfig.width, roomConfig.depth, c.x, c.z, c.w, c.d));
+      const desiredCandidates = buildCandidates(deltaX, deltaZ);
+      const desiredCollision = anyCollision(desiredCandidates);
+      const desiredOutsideShape = anyOutsideShape(desiredCandidates);
+
+      if (desiredCollision) {
+        dragBlockedReasonRef.current = 'collision';
+      } else if (!dragBlockedReasonRef.current && desiredOutsideShape) {
+        dragBlockedReasonRef.current = 'shape';
+      }
+
+      let finalCandidates = null;
+      if (!desiredCollision && !desiredOutsideShape) {
+        finalCandidates = desiredCandidates;
+      } else if (!anyCollision(buildCandidates(deltaX, 0)) && !anyOutsideShape(buildCandidates(deltaX, 0))) {
+        finalCandidates = buildCandidates(deltaX, 0);
+      } else if (!anyCollision(buildCandidates(0, deltaZ)) && !anyOutsideShape(buildCandidates(0, deltaZ))) {
+        finalCandidates = buildCandidates(0, deltaZ);
+      }
+
+      if (finalCandidates) {
+        const posMap = {};
+        finalCandidates.forEach(c => { posMap[c.id] = { x: c.x, z: c.z }; });
+        setItems(items.map(i => posMap[i.id] ? { ...i, ...posMap[i.id] } : i));
+      }
+
     };
 
-    const handleMouseUp = () => {
-        if(dragItem) {
-            // Save to history only after drag ends
-            saveToHistory(items);
-            setDragItem(null);
-        }
+  const handleMouseUp = () => {
+    if (dragItem) {
+      // Save to history only after drag ends
+      saveToHistory(items);
+      if (dragBlockedReasonRef.current === 'collision') {
+        showPlacementAlert("Furniture items cannot be placed on top of each other.");
+      }
+      dragBlockedReasonRef.current = null;
+      setDragItem(null);
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      const targetTag = event.target?.tagName;
+      const isTypingField = targetTag === 'INPUT' || targetTag === 'TEXTAREA' || event.target?.isContentEditable;
+
+      if (isTypingField) return;
+
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'c') {
+        event.preventDefault();
+        handleCopySelectedItem();
+      }
+
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'v') {
+        event.preventDefault();
+        handlePasteItem();
+      }
     };
 
-    const selectedItem = items.find(i => i.id === selectedId);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedIds, copiedItems, items, roomConfig.width, roomConfig.depth]);
+
+  useEffect(() => {
+    const revealElements = document.querySelectorAll('.design-scroll-reveal:not(.visible)');
+    if (!revealElements.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    revealElements.forEach((element) => observer.observe(element));
+
+    return () => observer.disconnect();
+  }, [selectedIds.size, viewMode]);
+
+  const editItem = selectedIds.size === 1 ? items.find(i => i.id === [...selectedIds][0]) : null;
+  const roomShapeMeshes = getRoomShapeMeshes(roomConfig.roomShape, roomConfig.width, roomConfig.depth);
   return (
-    <div style={{ display: 'flex', height: '100vh', fontFamily: 'Segoe UI, sans-serif' }}>
-          
-          {/* NOTIFICATION TOAST */}
-          {notification && (
-              <div style={{
-                  position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)',
-                  background: '#28a745', color: 'white', padding: '10px 20px', borderRadius: '5px',
-                  zIndex: 1000, boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-              }}>
-                  {notification}
-              </div>
-          )}
-    
-          {/* SIDEBAR */}
-          <div style={{ width: '340px', padding: '20px', background: '#f0f2f5', borderRight: '1px solid #ddd', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <h2 style={{margin: 0, color: '#333'}}>🛋️ Furniture Planner</h2>
-            
-            {/* GLOBAL ACTIONS (Undo/Redo/Save) */}
-            <div style={{display: 'flex', gap: '5px'}}>
-                <button onClick={handleUndo} disabled={historyIndex === 0} style={historyIndex === 0 ? disabledBtn : actionBtn}>↩ Undo</button>
-                <button onClick={handleRedo} disabled={historyIndex === history.length - 1} style={historyIndex === history.length - 1 ? disabledBtn : actionBtn}>↪ Redo</button>
-                <button onClick={handleSaveDesign} style={{...actionBtn, background: '#007bff', color: 'white', marginLeft: 'auto'}}>💾 Save</button>
+    <>
+      <TopNav />
+
+      <div className="design-page">
+
+        {/* NOTIFICATION TOAST */}
+        {notification && (
+          <div className="design-notification">
+            {notification}
+          </div>
+        )}
+
+        {/* SIDEBAR */}
+        <aside className="design-sidebar design-scroll-reveal">
+        <h2 className="design-title design-scroll-reveal">
+          <BiCube className="design-title-icon" />
+          <span>Furniture Planner</span>
+        </h2>
+
+        {/* GLOBAL ACTIONS (Undo/Redo/Save) */}
+        <div className="design-actions-row design-scroll-reveal">
+          <button onClick={handleUndo} disabled={historyIndex === 0} className={historyIndex === 0 ? 'disabledBtn' : 'actionBtn'}>
+            <HiOutlineArrowUturnLeft className="design-button-icon" />
+            <span>Undo</span>
+          </button>
+          <button onClick={handleRedo} disabled={historyIndex === history.length - 1} className={historyIndex === history.length - 1 ? 'disabledBtn' : 'actionBtn'}>
+            <HiOutlineArrowUturnRight className="design-button-icon" />
+            <span>Redo</span>
+          </button>
+          <button onClick={handleSaveDesign} className="actionBtn primary">
+            <FiSave className="design-button-icon" />
+            <span>Save</span>
+          </button>
+          <button onClick={handleCopySelectedItem} className={selectedIds.size > 0 ? 'actionBtn' : 'disabledBtn'} disabled={selectedIds.size === 0} title="Ctrl+C">
+            <span>Copy</span>
+          </button>
+          <button onClick={handlePasteItem} className={copiedItems.length > 0 ? 'actionBtn' : 'disabledBtn'} disabled={copiedItems.length === 0} title="Ctrl+V">
+            <span>Paste</span>
+          </button>
+        </div>
+
+        {/* 1. Global Settings */}
+        <div className="cardStyle design-scroll-reveal">
+          <h3 className="headingStyle">1. Room Settings</h3>
+          <div className="rowStyle">
+            <label>Room Size:</label>
+            <select
+              value={selectedRoomPreset}
+              onChange={e => handleRoomPresetChange(e.target.value)}
+              className="inputStyle"
+              style={{ width: '100%' }}
+            >
+              {ROOM_SIZE_PRESETS.map(preset => (
+                <option key={preset.id} value={preset.id}>{preset.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="rowStyle">
+            <label>Room Shape:</label>
+            <select
+              value={roomConfig.roomShape}
+              onChange={e => setRoomConfig({ ...roomConfig, roomShape: e.target.value })}
+              className="inputStyle"
+              style={{ width: '100%' }}
+            >
+              {ROOM_SHAPE_OPTIONS.map(shape => (
+                <option key={shape.id} value={shape.id}>{shape.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="rowStyle"> <label>Width (ft):</label> <input type="number" value={roomConfig.width} min={6} max={30} className="inputStyle" disabled={selectedRoomPreset !== 'custom'} onChange={e => { if (selectedRoomPreset === 'custom') setRoomConfig({ ...roomConfig, width: Math.min(30, Math.max(6, Number(e.target.value))) }); }} /> </div>
+          <div className="rowStyle"> <label>Depth (ft):</label> <input type="number" value={roomConfig.depth} min={6} max={30} className="inputStyle" disabled={selectedRoomPreset !== 'custom'} onChange={e => { if (selectedRoomPreset === 'custom') setRoomConfig({ ...roomConfig, depth: Math.min(30, Math.max(6, Number(e.target.value))) }); }} /> </div>
+
+          <div className="rowStyle"> <label>Walls:</label> <input type="color" value={roomConfig.wallColor} onChange={e => setRoomConfig({ ...roomConfig, wallColor: e.target.value })} /> </div>
+          <div className="rowStyle"> <label>Floor:</label> <input type="color" value={roomConfig.floorColor} onChange={e => setRoomConfig({ ...roomConfig, floorColor: e.target.value })} /> </div>
+
+          <div className="rangeBlock">
+            <label className="rangeLabel">Lighting Intensity:</label>
+            <input type="range" min="0.1" max="2" step="0.1" value={roomConfig.globalShade} onChange={e => setRoomConfig({ ...roomConfig, globalShade: Number(e.target.value) })} className="rangeInput" />
+          </div>
+        </div>
+
+        {/* 2. Add Furniture */}
+        <div className="cardStyle design-scroll-reveal">
+          <h3 className="headingStyle">2. Catalog</h3>
+          <div className="catalogGrid">
+            {FURNITURE_TYPES.map(type => {
+              const FurnitureIcon = type.icon;
+
+              return (
+              <button key={type.name} onClick={() => addItem(type)} className="addItemBtn">
+                <FurnitureIcon className="catalogIcon" />
+                <span>{type.name}</span>
+              </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 3. Selected Item Settings */}
+          {editItem ? (
+          <div className="cardStyle selectedCard design-scroll-reveal">
+              <h3 className="headingStyle">3. Edit: {editItem.type}</h3>
+
+            <div className="rowStyle">
+              <label>Color:</label>
+                <input type="color" value={editItem.color} onChange={e => updateSelectedItem('color', e.target.value)} />
             </div>
-    
-            {/* 1. Global Settings */}
-            <div style={cardStyle}>
-              <h3 style={headingStyle}>1. Room Settings</h3>
-              <div style={rowStyle}> <label>Width (ft):</label> <input type="number" value={roomConfig.width} onChange={e => setRoomConfig({...roomConfig, width: Number(e.target.value)})} style={inputStyle} /> </div>
-              <div style={rowStyle}> <label>Depth (ft):</label> <input type="number" value={roomConfig.depth} onChange={e => setRoomConfig({...roomConfig, depth: Number(e.target.value)})} style={inputStyle} /> </div>
-              
-              <div style={rowStyle}> <label>Walls:</label> <input type="color" value={roomConfig.wallColor} onChange={e => setRoomConfig({...roomConfig, wallColor: e.target.value})} /> </div>
-              <div style={rowStyle}> <label>Floor:</label> <input type="color" value={roomConfig.floorColor} onChange={e => setRoomConfig({...roomConfig, floorColor: e.target.value})} /> </div>
-              
-              <div style={{marginTop: '10px'}}>
-                 <label style={{fontSize: '12px', fontWeight: 'bold'}}>Lighting Intensity:</label>
-                 <input type="range" min="0.1" max="2" step="0.1" value={roomConfig.globalShade} onChange={e => setRoomConfig({...roomConfig, globalShade: Number(e.target.value)})} style={{width: '100%'}} />
+
+            <div className="shadeBlock">
+              <label className="miniLabel">Shade / Brightness:</label>
+              <div className="shadeButtons">
+                <button onClick={() => handleShadeChange(-10)} className="smallBtn">Darker</button>
+                <button onClick={() => handleShadeChange(10)} className="smallBtn">Lighter</button>
               </div>
             </div>
-    
-            {/* 2. Add Furniture */}
-            <div style={cardStyle}>
-              <h3 style={headingStyle}>2. Catalog</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                {FURNITURE_TYPES.map(type => (
-                  <button key={type.name} onClick={() => addItem(type)} style={addItemBtn}>
-                    <span style={{fontSize: '20px'}}>🪑</span> {type.name}
-                  </button>
+
+            <label className="miniLabel">Rotation:</label>
+            <input type="range" min="0" max="360" step="15"
+                value={editItem.rotation * (180 / Math.PI)}
+              onChange={e => updateSelectedItem('rotation', e.target.value * (Math.PI / 180))}
+              className="rangeInput" />
+
+              <div className="rowStyle"><label>W:</label> <input type="range" min="0.5" max="6" step="0.1" value={editItem.w} onChange={e => updateSelectedItem('w', Number(e.target.value))} className="rangeInputShort" /></div>
+              <div className="rowStyle"><label>D:</label> <input type="range" min="0.5" max="6" step="0.1" value={editItem.d} onChange={e => updateSelectedItem('d', Number(e.target.value))} className="rangeInputShort" /></div>
+
+            <button onClick={deleteSelectedItem} className="actionBtn danger">Delete Item</button>
+          </div>
+          ) : selectedIds.size > 1 ? (
+            <div className="cardStyle selectedCard design-scroll-reveal">
+              <h3 className="headingStyle">3. {selectedIds.size} Items Selected</h3>
+              <p style={{ fontSize: '12px', color: '#b9afb0', marginBottom: '10px' }}>Drag any selected item to move all together.</p>
+              <button onClick={deleteSelectedItem} className="actionBtn danger">Delete All Selected</button>
+            </div>
+          ) : (
+            <div className="emptyState design-scroll-reveal">
+              Select an item to edit
+              <br />
+              <span style={{ fontSize: '11px', opacity: 0.6 }}>Hold Ctrl to multi-select</span>
+            </div>
+        )}
+        </aside>
+
+        {/* CANVAS AREA */}
+        <section className="design-canvas-area design-scroll-reveal">
+        <div className="design-view-tabs design-scroll-reveal">
+          <button onClick={() => setViewMode('2D')} className={viewMode === '2D' ? 'activeTabStyle' : 'tabStyle'}>
+            <BsGrid3X3 className="design-tab-icon" />
+            <span>2D Plan</span>
+          </button>
+          <button onClick={() => setViewMode('3D')} className={viewMode === '3D' ? 'activeTabStyle' : 'tabStyle'}>
+            <BiCube className="design-tab-icon" />
+            <span>3D View</span>
+          </button>
+        </div>
+
+        <div className="design-canvas-shell design-scroll-reveal">
+
+          {/* 2D VIEW */}
+          {viewMode === '2D' && (
+            <div
+              onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}
+              className="planner2dWrap"
+              style={{ cursor: dragItem ? 'grabbing' : 'default' }}
+            >
+              {/* Room Container */}
+              <div ref={roomRef} className="room2d" style={{ width: `${roomConfig.width * 40}px`, height: `${roomConfig.depth * 40}px`, border: `8px solid ${roomConfig.wallColor}`, clipPath: getRoomClipPath(roomConfig.roomShape) }}>
+                {/* Grid Background */}
+                <div className="room2dGrid"></div>
+
+                {/* Room Size Labels */}
+                <div className="room2dLabel room2dLabelTop">{roomConfig.width} ft</div>
+                <div className="room2dLabel room2dLabelSide">{roomConfig.depth} ft</div>
+
+                {items.map(item => (
+                  <div key={item.id} onMouseDown={(e) => handleMouseDown(e, item)}
+                    style={{
+                      position: 'absolute',
+                      left: `${item.x * 40}px`, top: `${item.z * 40}px`,
+                      width: `${item.w * 40}px`, height: `${item.d * 40}px`,
+                      backgroundColor: item.color,
+                        border: selectedIds.has(item.id) ? '2px solid #ded2d3' : '1px solid rgba(10, 10, 10, 0.65)',
+                      zIndex: 10, cursor: 'grab',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px',
+                      transform: `rotate(${item.rotation}rad)`,
+                      transformOrigin: 'center center',
+                      boxShadow: '0 6px 12px rgba(0,0,0,0.22)'
+                    }}>
+                    <div style={{ width: '100%', height: '100%', borderTop: '2px solid rgba(0,0,0,0.2)' }}></div>
+                  </div>
                 ))}
               </div>
             </div>
-    
-            {/* 3. Selected Item Settings */}
-            {selectedItem ? (
-              <div style={{ ...cardStyle, border: '2px solid #007bff', background: '#fff' }}>
-                <h3 style={headingStyle}>3. Edit: {selectedItem.type}</h3>
-                
-                <div style={rowStyle}>
-                    <label>Color:</label> 
-                    <input type="color" value={selectedItem.color} onChange={e => updateSelectedItem('color', e.target.value)} />
-                </div>
-    
-                <div style={{marginBottom: '10px'}}>
-                    <label style={{fontSize: '12px'}}>Shade / Brightness:</label>
-                    <div style={{display: 'flex', gap: '5px', marginTop: '5px'}}>
-                        <button onClick={() => handleShadeChange(-10)} style={smallBtn}>Darker</button>
-                        <button onClick={() => handleShadeChange(10)} style={smallBtn}>Lighter</button>
-                    </div>
-                </div>
-    
-                <label style={{fontSize: '12px'}}>Rotation:</label>
-                <input type="range" min="0" max="360" step="15" 
-                       value={selectedItem.rotation * (180/Math.PI)}
-                       onChange={e => updateSelectedItem('rotation', e.target.value * (Math.PI/180))}
-                       style={{width: '100%', marginBottom: '10px'}} />
-    
-                <div style={rowStyle}><label>W:</label> <input type="range" min="0.5" max="6" step="0.1" value={selectedItem.w} onChange={e => updateSelectedItem('w', Number(e.target.value))} style={{width: '70%'}} /></div>
-                <div style={rowStyle}><label>D:</label> <input type="range" min="0.5" max="6" step="0.1" value={selectedItem.d} onChange={e => updateSelectedItem('d', Number(e.target.value))} style={{width: '70%'}} /></div>
-                
-                <button onClick={deleteSelectedItem} style={{...actionBtn, background: '#dc3545', color: 'white', marginTop: '10px', width: '100%'}}>Delete Item</button>
-              </div>
-            ) : (
-                 <div style={{padding: '20px', textAlign: 'center', color: '#888', border: '1px dashed #ccc', borderRadius: '8px'}}>Select an item to edit</div>
-            )}
-          </div>
-    
-          {/* CANVAS AREA */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <div style={{ padding: '15px', background: 'white', display: 'flex', justifyContent: 'center', gap: '20px', borderBottom: '1px solid #ddd' }}>
-              <button onClick={() => setViewMode('2D')} style={viewMode === '2D' ? activeTabStyle : tabStyle}>📐 2D Plan</button>
-              <button onClick={() => setViewMode('3D')} style={viewMode === '3D' ? activeTabStyle : tabStyle}>🧊 3D View</button>
-            </div>
-    
-            <div style={{ flex: 1, position: 'relative', overflow: 'hidden', background: '#e0e0e0' }}>
-              
-              {/* 2D VIEW */}
-              {viewMode === '2D' && (
-                <div 
-                  onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}
-                  style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: dragItem ? 'grabbing' : 'default' }}
-                >
-                  {/* Room Container */}
-                  <div ref={roomRef} style={{ width: `${roomConfig.width * 40}px`, height: `${roomConfig.depth * 40}px`, background: 'white', border: `8px solid ${roomConfig.wallColor}`, position: 'relative', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
-                    {/* Grid Background */}
-                    <div style={{position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(#eee 1px, transparent 1px), linear-gradient(90deg, #eee 1px, transparent 1px)', backgroundSize: '40px 40px', zIndex: 0}}></div>
-                    
-                    {/* Room Size Labels */}
-                    <div style={{position: 'absolute', top: '-30px', left: '50%', transform: 'translateX(-50%)', fontWeight: 'bold'}}>{roomConfig.width} ft</div>
-                    <div style={{position: 'absolute', left: '-40px', top: '50%', transform: 'translateY(-50%) rotate(-90deg)', fontWeight: 'bold'}}>{roomConfig.depth} ft</div>
-    
-                    {items.map(item => (
-                      <div key={item.id} onMouseDown={(e) => handleMouseDown(e, item)}
-                        style={{
-                          position: 'absolute', 
-                          left: `${item.x * 40}px`, top: `${item.z * 40}px`, 
-                          width: `${item.w * 40}px`, height: `${item.d * 40}px`,
-                          backgroundColor: item.color, 
-                          border: selectedId === item.id ? '3px solid #007bff' : '1px solid #555', 
-                          zIndex: 10, cursor: 'grab', 
-                          display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '4px',
-                          transform: `rotate(${item.rotation}rad)`,
-                          transformOrigin: 'center center',
-                          boxShadow: '2px 2px 5px rgba(0,0,0,0.2)'
-                        }}>
-                        <div style={{width: '100%', height: '100%', borderTop: '2px solid rgba(0,0,0,0.2)'}}></div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-    
-              {/* 3D VIEW */}
-              {viewMode === '3D' && (
-                // 1. Set shadows="soft". This makes edges smooth automatically.
-                <Canvas camera={{ position: [20, 25, 20], fov: 40 }} shadows="soft" dpr={[1, 9]} style={{ background: '#e0e0e0' }}>
-                  <OrbitControls minPolarAngle={0} maxPolarAngle={Math.PI / 2.1} />
-                  
-                  {/* --- FINAL REALISTIC & STABLE LIGHTING --- */}
-    
-                  {/* 2. Environment: the 'ambient light' inside the room. 
+          )}
+
+          {/* 3D VIEW */}
+          {viewMode === '3D' && (
+            // 1. Set shadows="soft". This makes edges smooth automatically.
+            <Canvas camera={{ position: [20, 25, 20], fov: 40 }} shadows="soft" dpr={[1, 9]} style={{ background: '#d2d0cb' }}>
+              <OrbitControls minPolarAngle={0} maxPolarAngle={Math.PI / 2.1} />
+
+              {/* --- FINAL REALISTIC & STABLE LIGHTING --- */}
+
+              {/* 2. Environment: the 'ambient light' inside the room. 
                   This prevents shadows from becoming too dark. Looks nicely balanced. */}
-                  <Environment preset="city" intensity={0.5} />
-    
-                  {/*  3. ContactShadows (Optimized): darken where objects touch the floor. */}
-                  <ContactShadows 
-                    resolution={2048} 
-                    scale={50} 
-                    blur={2.5} 
-                    opacity={roomConfig.globalShade * 0.5} 
-                    far={10} 
-                    color="#000000" 
-                  />
-                  
-                  {/* 4. Lighting Setup */}
-                  <ambientLight intensity={roomConfig.globalShade * 0.3} />
-                  
-                  {/* 5. Main Light (Directional): this casts the main shadow. 
+              <Environment preset="city" intensity={0.5} />
+
+              {/*  3. ContactShadows (Optimized): darken where objects touch the floor. */}
+              <ContactShadows
+                resolution={2048}
+                scale={50}
+                blur={2.5}
+                opacity={roomConfig.globalShade * 0.5}
+                far={10}
+                color="#000000"
+              />
+
+              {/* 4. Lighting Setup */}
+              <ambientLight intensity={roomConfig.globalShade * 0.3} />
+
+              {/* 5. Main Light (Directional): this casts the main shadow. 
                   shadow-radius={4} makes shadow edges softly blurred (soft). */}
-                  <directionalLight 
-                    position={[10, 20, 10]} 
-                    intensity={roomConfig.globalShade * 2.8} 
-                    castShadow 
-                    shadow-mapSize={[2048, 2048]} // The quality has been increased.
-                    shadow-bias={-0.000001} // Reducing Shadow Acne
-                    shadow-radius={4} // This is what makes the shadow soft and not flicker.
-                  >
-    
-                    {/* When you enlarge the Shadow Camera, shadows fall across the entire room.*/}
-                    <orthographicCamera attach="shadow-camera" args={[-20, 20, 20, -20]} />
-                  </directionalLight>
-    
-                  <group position={[-roomConfig.width / 2, 0, -roomConfig.depth / 2]}> 
-                    {/* Floor */}
-                    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[roomConfig.width / 2, -0.01, roomConfig.depth / 2]} receiveShadow>
-                      <planeGeometry args={[roomConfig.width, roomConfig.depth]} />
-                      <meshStandardMaterial color={roomConfig.floorColor} roughness={0.8} />
-                    </mesh>
-                    
-                    {/* Walls */}
-                    <mesh position={[roomConfig.width / 2, 4, 0]} receiveShadow>
-                        <boxGeometry args={[roomConfig.width, 8, 0.2]} />
-                        <meshStandardMaterial color={roomConfig.wallColor} />
-                    </mesh>
-                    <mesh position={[0, 4, roomConfig.depth / 2]} receiveShadow>
-                        <boxGeometry args={[0.2, 8, roomConfig.depth]} />
-                        <meshStandardMaterial color={roomConfig.wallColor} />
-                    </mesh>
-    
-                    {/* Furniture Items */}
-                    {items.map(item => (
-                      <group key={item.id} position={[item.x + item.w / 2, 0, item.z + item.d / 2]} rotation={[0, -item.rotation, 0]}>
-                        {/* Floating Label */}
-                        {selectedId === item.id && (
-                            <Html position={[0, item.h + 0.5, 0]} center>
-                                <div style={{background: 'rgba(0,0,0,0.8)', color: 'white', padding: '4px 8px', borderRadius: '4px', fontSize: '12px'}}>Selected</div>
-                            </Html>
-                        )}
-                        {item.type === 'Chair' && <Chair w={item.w} d={item.d} h={item.h} color={item.color} />}
-                        {item.type === 'Table' && <Table w={item.w} d={item.d} h={item.h} color={item.color} />}
-                        {item.type === 'Bed' && <Bed w={item.w} d={item.d} h={item.h} color={item.color} />}
-                        {item.type === 'Cupboard' && <Cupboard w={item.w} d={item.d} h={item.h} color={item.color} />}
-                      </group>
-                    ))}
+              <directionalLight
+                position={[10, 20, 10]}
+                intensity={roomConfig.globalShade * 2.8}
+                castShadow
+                shadow-mapSize={[2048, 2048]} // The quality has been increased.
+                shadow-bias={-0.000001} // Reducing Shadow Acne
+                shadow-radius={4} // This is what makes the shadow soft and not flicker.
+              >
+
+                {/* When you enlarge the Shadow Camera, shadows fall across the entire room.*/}
+                <orthographicCamera attach="shadow-camera" args={[-20, 20, 20, -20]} />
+              </directionalLight>
+
+              <group position={[-roomConfig.width / 2, 0, -roomConfig.depth / 2]}>
+                {/* Floor */}
+                {roomShapeMeshes.floors.map((floor, index) => (
+                  <mesh key={`floor-${index}`} rotation={[-Math.PI / 2, 0, 0]} position={[floor.x, -0.01, floor.z]} receiveShadow>
+                    <planeGeometry args={[floor.w, floor.d]} />
+                    <meshStandardMaterial color={roomConfig.floorColor} roughness={0.8} />
+                  </mesh>
+                ))}
+
+                {/* Walls */}
+                {roomShapeMeshes.walls.map((wall, index) => (
+                  <mesh key={`wall-${index}`} position={[wall.x, 4, wall.z]} receiveShadow>
+                    <boxGeometry args={[wall.w, 8, wall.d]} />
+                    <meshStandardMaterial color={roomConfig.wallColor} />
+                  </mesh>
+                ))}
+
+                {/* Furniture Items */}
+                {items.map(item => (
+                  <group key={item.id} position={[item.x + item.w / 2, 0, item.z + item.d / 2]} rotation={[0, -item.rotation, 0]}>
+                    {/* Floating Label */}
+                      {selectedIds.has(item.id) && (
+                      <Html position={[0, item.h + 0.5, 0]} center>
+                        <div className="selectedLabel3d">Selected</div>
+                      </Html>
+                    )}
+                    {/* This is where the component is rendered in 3D */}
+                    {item.type === 'Chair' && <Chair w={item.w} d={item.d} h={item.h} color={item.color} />}
+                    {item.type === 'Table' && <Table w={item.w} d={item.d} h={item.h} color={item.color} />}
+                    {item.type === 'Bed' && <Bed w={item.w} d={item.d} h={item.h} color={item.color} />}
+                    {item.type === 'Cupboard' && <Cupboard w={item.w} d={item.d} h={item.h} color={item.color} />}
+                    {item.type === 'Sofa' && <Sofa w={item.w} d={item.d} h={item.h} color={item.color} />}
+                    {item.type === 'Nightstand' && <Nightstand w={item.w} d={item.d} h={item.h} color={item.color} />}
+                    {item.type === 'DressingTable' && <DressingTable w={item.w} d={item.d} h={item.h} color={item.color} />}
+                    {item.type === 'BeanBag' && <BeanBag w={item.w} d={item.d} h={item.h} color={item.color} />}
+                    {item.type === 'Lamp' && <Lamp w={item.w} d={item.d} h={item.h} color={item.color} />}
+                    {item.type === 'TVStand' && <TVStand w={item.w} d={item.d} h={item.h} color={item.color} />}
+                    {item.type === 'Rug' && <Rug w={item.w} d={item.d} color={item.color} />}
                   </group>
-                  <gridHelper args={[50, 50, 0xdddddd, 0xeeeeee]} position={[0, 0, 0]} />
-                </Canvas>
-              )}
-    
-            </div>
-          </div>
+                ))}
+              </group>
+              <gridHelper args={[50, 50, 0xdddddd, 0xeeeeee]} position={[0, 0, 0]} />
+            </Canvas>
+          )}
+
         </div>
+        </section>
+      </div>
+    </>
   )
 }
-
-// STYLES
-const cardStyle = { background: 'white', padding: '15px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' };
-const headingStyle = { fontSize: '14px', textTransform: 'uppercase', color: '#888', marginBottom: '10px', marginTop: 0 };
-const rowStyle = { display: 'flex', justifyContent: 'space-between', marginBottom: '8px', alignItems: 'center', fontSize: '14px' };
-const inputStyle = { width: '60px', padding: '5px', border: '1px solid #ddd', borderRadius: '4px' };
-const addItemBtn = { padding: '10px', cursor: 'pointer', background: 'white', border: '1px solid #ddd', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', transition: '0.2s' };
-const actionBtn = { padding: '8px 12px', cursor: 'pointer', background: 'white', border: '1px solid #ccc', borderRadius: '4px', fontSize: '13px', fontWeight: 'bold' };
-const disabledBtn = { ...actionBtn, opacity: 0.5, cursor: 'not-allowed' };
-const smallBtn = { padding: '4px 8px', cursor: 'pointer', background: '#f8f9fa', border: '1px solid #ccc', borderRadius: '4px', fontSize: '11px' };
-const tabStyle = { padding: '8px 20px', cursor: 'pointer', border: 'none', background: 'transparent', fontSize: '16px', fontWeight: 'bold', color: '#666' };
-const activeTabStyle = { ...tabStyle, color: '#007bff', borderBottom: '2px solid #007bff' };
-
 
 export default Design

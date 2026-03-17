@@ -21,7 +21,7 @@ export const UserDetailAPI = {
   updateUser: async (Id, userData) => {
     try {
       const response = await API.post(`/profile/update/${Id}`, userData);
-      return { success: true };
+      return response.data;
     } catch (error) {
       console.error("Save Error:", error);
       return {

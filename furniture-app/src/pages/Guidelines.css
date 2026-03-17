@@ -1,0 +1,442 @@
+@import url('https://fonts.googleapis.com/css2?family=Esteban&display=swap');
+
+.guidelines-page {
+  min-height: 100vh;
+  padding: 110px 24px 60px;
+  background:
+    radial-gradient(circle at top right, rgba(193, 183, 184, 0.12), transparent 28%),
+    radial-gradient(circle at left center, rgba(80, 63, 52, 0.26), transparent 32%),
+    linear-gradient(180deg, #121212 0%, #151312 55%, #101010 100%);
+  color: #c1b7b8;
+}
+
+.guidelines-section-reveal {
+  opacity: 0;
+  transform: translateY(48px);
+  transition: opacity 0.85s ease, transform 0.85s ease;
+}
+
+.guidelines-section-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.guidelines-hero,
+.guidelines-overview,
+.guidelines-steps-section,
+.guidelines-actions-section,
+.guidelines-tips-section {
+  width: min(1200px, 100%);
+  margin: 0 auto;
+}
+
+.guidelines-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 420px);
+  gap: 28px;
+  align-items: stretch;
+  margin-bottom: 40px;
+}
+
+.guidelines-hero-content,
+.guidelines-hero-panel,
+.guidelines-overview-card,
+.guidelines-step-card,
+.guidelines-action-card,
+.guidelines-tips-card {
+  border: 1px solid rgba(193, 183, 184, 0.16);
+  background: linear-gradient(160deg, rgba(25, 24, 24, 0.92), rgba(15, 15, 15, 0.92));
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
+}
+
+.guidelines-panel-reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.guidelines-panel-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.guidelines-hero-content {
+  padding: 42px;
+  border-radius: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.guidelines-hero-content::after {
+  content: '';
+  position: absolute;
+  inset: auto -12% -48% auto;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(193, 183, 184, 0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.guidelines-eyebrow {
+  margin: 0 0 14px;
+  font-family: 'Cinzel', 'EUR42', serif, sans-serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: #a69c9d;
+}
+
+.guidelines-hero-content h1,
+.guidelines-section-heading h2,
+.guidelines-overview-card h2,
+.guidelines-tips-card h2 {
+  margin: 0;
+  font-family: 'Cinzel', 'EUR42', serif, sans-serif;
+  font-weight: 300;
+  letter-spacing: 1px;
+  color: #ebe3e4;
+}
+
+.guidelines-hero-content h1 {
+  max-width: 12ch;
+  font-size: clamp(2.5rem, 5vw, 4.8rem);
+  line-height: 0.98;
+}
+
+.guidelines-intro {
+  max-width: 62ch;
+  margin: 22px 0 0;
+  font-family: 'Esteban', serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #9d9495;
+}
+
+.guidelines-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 30px;
+}
+
+.guidelines-primary-btn,
+.guidelines-secondary-btn {
+  border-radius: 999px;
+  padding: 12px 24px;
+  font-family: 'Cinzel', 'EUR42', serif, sans-serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.guidelines-primary-btn {
+  border: 1px solid #c1b7b8;
+  background: #c1b7b8;
+  color: #141414;
+}
+
+.guidelines-primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(193, 183, 184, 0.18);
+}
+
+.guidelines-secondary-btn {
+  border: 1px solid rgba(193, 183, 184, 0.28);
+  background: transparent;
+  color: #c1b7b8;
+}
+
+.guidelines-secondary-btn:hover {
+  background: rgba(193, 183, 184, 0.08);
+}
+
+.guidelines-hero-panel {
+  border-radius: 32px;
+  padding: 24px;
+  display: grid;
+  gap: 14px;
+  align-content: center;
+}
+
+.guidelines-mini-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  font-family: 'Esteban', serif;
+  color: #ded2d3;
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease, background 0.25s ease;
+}
+
+.guidelines-section-reveal.visible .guidelines-mini-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.guidelines-mini-card:nth-child(1) {
+  transition-delay: 0.2s;
+}
+
+.guidelines-mini-card:nth-child(2) {
+  transition-delay: 0.28s;
+}
+
+.guidelines-mini-card:nth-child(3) {
+  transition-delay: 0.36s;
+}
+
+.guidelines-mini-card:nth-child(4) {
+  transition-delay: 0.44s;
+}
+
+.guidelines-mini-icon,
+.guidelines-action-icon {
+  flex-shrink: 0;
+}
+
+.guidelines-mini-icon {
+  font-size: 22px;
+}
+
+.guidelines-overview {
+  margin-bottom: 34px;
+}
+
+.guidelines-overview-card,
+.guidelines-tips-card {
+  border-radius: 28px;
+  padding: 32px;
+}
+
+.guidelines-overview-card h2,
+.guidelines-tips-card h2,
+.guidelines-section-heading h2 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+}
+
+.guidelines-overview-grid,
+.guidelines-action-grid {
+  display: grid;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.guidelines-overview-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.guidelines-overview-grid article,
+.guidelines-step-card,
+.guidelines-action-card {
+  border-radius: 22px;
+}
+
+.guidelines-overview-grid article {
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.03);
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.guidelines-section-reveal.visible .guidelines-overview-grid article {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.guidelines-overview-grid h3,
+.guidelines-step-card h3,
+.guidelines-action-card h3 {
+  margin: 0 0 10px;
+  font-family: 'Cinzel', 'EUR42', serif, sans-serif;
+  font-weight: 300;
+  color: #ebe3e4;
+}
+
+.guidelines-overview-grid p,
+.guidelines-step-card p,
+.guidelines-action-card p,
+.guidelines-tips-card li {
+  margin: 0;
+  font-family: 'Esteban', serif;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #9e9596;
+}
+
+.guidelines-steps-section,
+.guidelines-actions-section,
+.guidelines-tips-section {
+  margin-top: 48px;
+}
+
+.guidelines-section-heading {
+  margin-bottom: 22px;
+}
+
+.guidelines-steps-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.guidelines-step-card {
+  padding: 28px;
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  gap: 0;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(34px);
+  transition: opacity 0.75s ease, transform 0.75s ease, border-color 0.25s ease;
+}
+
+.guidelines-section-reveal.visible .guidelines-step-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.guidelines-step-card:hover,
+.guidelines-action-card:hover,
+.guidelines-overview-grid article:hover {
+  border-color: rgba(222, 210, 211, 0.26);
+}
+
+.guidelines-step-number {
+  font-family: 'Cinzel', 'EUR42', serif, sans-serif;
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: #8e8586;
+  margin-bottom: 14px;
+}
+
+.guidelines-step-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2px;
+}
+
+.guidelines-step-line {
+  width: 1px;
+  flex: 1;
+  min-height: 100px;
+  background: linear-gradient(180deg, rgba(193, 183, 184, 0.45), rgba(193, 183, 184, 0));
+}
+
+.guidelines-step-body {
+  padding-left: 4px;
+}
+
+.guidelines-step-body p {
+  max-width: 64ch;
+}
+
+.guidelines-step-card ul,
+.guidelines-tips-card ul {
+  margin: 18px 0 0;
+  padding-left: 20px;
+}
+
+.guidelines-step-card li,
+.guidelines-tips-card li {
+  margin-bottom: 10px;
+  font-family: 'Esteban', serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #c6bbbc;
+}
+
+.guidelines-action-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.guidelines-action-card {
+  padding: 24px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.guidelines-section-reveal.visible .guidelines-action-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.guidelines-action-icon {
+  font-size: 26px;
+  color: #ded2d3;
+  margin-bottom: 16px;
+}
+
+@media screen and (max-width: 1100px) {
+  .guidelines-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .guidelines-overview-grid,
+  .guidelines-action-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .guidelines-page {
+    padding: 92px 16px 40px;
+  }
+
+  .guidelines-hero-content,
+  .guidelines-hero-panel,
+  .guidelines-overview-card,
+  .guidelines-step-card,
+  .guidelines-action-card,
+  .guidelines-tips-card {
+    padding: 22px;
+    border-radius: 22px;
+  }
+
+  .guidelines-overview-grid,
+  .guidelines-action-grid,
+  .guidelines-steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .guidelines-step-card {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .guidelines-step-rail {
+    align-items: flex-start;
+  }
+
+  .guidelines-step-line {
+    width: 72px;
+    min-height: 1px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(193, 183, 184, 0.45), rgba(193, 183, 184, 0));
+  }
+
+  .guidelines-step-body {
+    padding-left: 0;
+  }
+
+  .guidelines-hero-content h1 {
+    max-width: none;
+  }
+
+  .guidelines-hero-actions {
+    flex-direction: column;
+  }
+
+  .guidelines-primary-btn,
+  .guidelines-secondary-btn {
+    width: 100%;
+  }
+}

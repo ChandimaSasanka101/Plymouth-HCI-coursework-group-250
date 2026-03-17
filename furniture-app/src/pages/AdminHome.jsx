@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { UserManagementAPI } from "../services/userManagementAPI";
 import { useNavigate } from "react-router-dom";
+import TopNav from "../components/TopNav";
+import "./AdminHome.css";
 
 import {
   BarChart,
@@ -37,85 +39,71 @@ function AdminHome() {
   }, []);
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <header
-        style={{
-          marginBottom: "30px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <h1>Admin Dashboard</h1>
-        <button
-          onClick={goToUserManagement}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Manage Users
-        </button>
-      </header>
+    <>
+      <TopNav />
 
-      {/* Chart Container Card */}
-      <div
-        style={{
-          backgroundColor: "white",
-          padding: "20px",
-          borderRadius: "10px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-          maxWidth: "800px",
-          margin: "0 auto",
-        }}
-      >
-        <h3 style={{ marginTop: 0, color: "#555" }}>
-          New User Registrations (Daily)
-        </h3>
+      <div className="admin-home-page">
+        <header className="admin-home-header">
+          <div>
+            <p className="admin-home-eyebrow">ADMIN PANEL</p>
+            <h1>Admin Dashboard</h1>
+            <p>Track daily registration activity and manage platform users.</p>
+          </div>
 
-        <div style={{ width: "100%", height: 300 }}>
-          {chartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis
-                  dataKey="date"
-                  tick={{ fontSize: 12 }}
-                  tickFormatter={(str) => {
-                    const date = new Date(str);
-                    return `${date.getMonth() + 1}/${date.getDate()}`; // Shows M/D
-                  }}
-                />
-                <YAxis allowDecimals={false} />
-                <Tooltip
-                  contentStyle={{
-                    borderRadius: "5px",
-                    border: "none",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-                  }}
-                />
-                <Bar
-                  dataKey="NewUsers"
-                  fill="#8884d8"
-                  radius={[4, 4, 0, 0]}
-                  barSize={40}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <p
-              style={{ textAlign: "center", color: "#888", marginTop: "100px" }}
-            >
-              No user data available yet.
-            </p>
-          )}
+          {/* <button onClick={goToUserManagement} className="admin-manage-users-btn">
+            Manage Users
+          </button> */}
+          
+        </header>
+
+        <div className="admin-chart-card">
+          <h3>New User Registrations (Daily)</h3>
+
+          <div className="admin-chart-wrap">
+            {chartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(193, 183, 184, 0.16)" vertical={false} />
+                  <XAxis
+                    dataKey="date"
+                    tick={{ fontSize: 12, fill: "#b9afb0" }}
+                    axisLine={{ stroke: "rgba(193, 183, 184, 0.28)" }}
+                    tickLine={{ stroke: "rgba(193, 183, 184, 0.28)" }}
+                    tickFormatter={(str) => {
+                      const date = new Date(str);
+                      return `${date.getMonth() + 1}/${date.getDate()}`;
+                    }}
+                  />
+                  <YAxis
+                    allowDecimals={false}
+                    tick={{ fontSize: 12, fill: "#b9afb0" }}
+                    axisLine={{ stroke: "rgba(193, 183, 184, 0.28)" }}
+                    tickLine={{ stroke: "rgba(193, 183, 184, 0.28)" }}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: "10px",
+                      border: "1px solid rgba(193, 183, 184, 0.25)",
+                      backgroundColor: "rgba(16, 16, 16, 0.95)",
+                      color: "#c1b7b8",
+                    }}
+                    labelStyle={{ color: "#ded2d3" }}
+                  />
+                  <Bar
+                    dataKey="NewUsers"
+                    fill="#c1b7b8"
+                    radius={[8, 8, 0, 0]}
+                    barSize={36}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <p className="admin-empty-state">No user data available yet.</p>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
