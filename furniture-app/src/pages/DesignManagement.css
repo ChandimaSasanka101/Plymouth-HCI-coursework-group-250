@@ -1,0 +1,161 @@
+/* DesignManagement.css */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Esteban&display=swap');
+
+#main-div {
+  min-height: 100vh;
+  background-color: #121212;
+  color: #C1B7B8;
+  padding: 140px 50px 100px;
+  font-family: 'Esteban', serif;
+  box-sizing: border-box;
+}
+
+.dm-scroll-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.dm-scroll-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#main-div h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 36px;
+  font-weight: 200;
+  letter-spacing: 5px;
+  text-align: center;
+  margin-bottom: 40px;
+  color: #C1B7B8;
+}
+
+/* Search container */
+#main-div input[type="text"] {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto 30px auto;
+  display: block;
+  padding: 12px 20px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(193, 183, 184, 0.3);
+  border-radius: 50px;
+  color: #C1B7B8;
+  font-family: 'Esteban', serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+#main-div input[type="text"]:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: #C1B7B8;
+  box-shadow: 0 0 15px rgba(193, 183, 184, 0.2);
+}
+
+#main-div input[type="text"]::placeholder {
+  color: #888;
+  letter-spacing: 1px;
+}
+
+/* Grid container */
+#designs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+/* Card styling */
+#designs > div {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(193, 183, 184, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
+}
+
+#designs > div:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(193, 183, 184, 0.15);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+#designs h3 {
+  font-family: 'Cinzel', serif;
+  color: #DED2D3;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin: 0 0 15px 0;
+}
+
+#designs p {
+  color: #888;
+  font-size: 13px;
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+/* Button styling */
+#designs button {
+  background-color: transparent;
+  color: #C1B7B8;
+  border: 1px solid #C1B7B8;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-family: 'Esteban', serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 10px;
+  margin-top: 15px;
+}
+
+#designs button:first-of-type:hover {
+  background-color: #C1B7B8;
+  color: #141414;
+  transform: scale(1.05);
+}
+
+#designs button:last-of-type {
+  border-color: #a85757;
+  color: #d89191;
+}
+
+#designs button:last-of-type:hover {
+  background-color: #8b0000;
+  color: white;
+  border-color: #8b0000;
+  transform: scale(1.05);
+}
+
+/* Empty state */
+#designs > p {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #888;
+  font-size: 16px;
+  padding: 40px 20px;
+}
+
+/* Loading state */
+#main-div > div:first-child {
+  text-align: center;
+  color: #C1B7B8;
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  padding: 100px 20px;
+}
+
+@media screen and (max-width: 767px) {
+  #main-div {
+    padding: 120px 20px 60px;
+  }
+}
