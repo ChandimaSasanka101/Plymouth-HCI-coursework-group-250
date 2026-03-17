@@ -1,0 +1,207 @@
+@import url('https://fonts.googleapis.com/css2?family=Esteban&display=swap');
+
+.top-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background-color: #101010;
+  color: #c1b7b8;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2000;
+  transition: all 0.4s ease-in-out;
+  box-sizing: border-box;
+}
+
+.top-navbar.scrolled {
+  padding: 10px 50px;
+  background-color: rgba(15, 15, 15, 0.95);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+.top-navbar-logo {
+  font-size: 25px;
+  letter-spacing: 2px;
+}
+
+.top-logo-text {
+  font-family: 'ImperiaBW01-Regular', 'Brush Script MT', cursive;
+  font-weight: 200;
+}
+
+.top-nav-links {
+  display: flex;
+  list-style: none;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+.top-nav-item {
+  text-decoration: none;
+  color: #c1b7b8;
+  font-family: 'EUR42', 'Cinzel', serif, sans-serif;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.top-nav-item:hover {
+  color: #ded2d3;
+}
+
+.top-nav-item::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  display: block;
+  margin-top: 5px;
+  right: 0;
+  background: #ded2d3;
+  transition: width 0.3s ease;
+  -webkit-transition: width 0.3s ease;
+}
+
+.top-nav-item:hover::after {
+  width: 100%;
+  left: 0;
+  background: #ded2d3;
+}
+
+.top-navbar-icons {
+  display: flex;
+  align-items: center;
+}
+
+.top-profile-icon {
+  font-size: 28px;
+  color: #c1b7b8;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.top-profile-icon:hover {
+  color: #ded2d3;
+  transform: scale(1.1);
+}
+
+.top-login-link {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: #c1b7b8;
+  cursor: pointer;
+  font-family: 'EUR42', 'Cinzel', serif, sans-serif;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  transition: color 0.3s ease;
+  position: relative;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.top-login-link:hover {
+  color: #ded2d3;
+  transform: scale(1.1);
+}
+
+
+.top-mobile-menu-icon {
+  display: none;
+  background: none;
+  border: none;
+  color: #c1b7b8;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 1024px) {
+  .top-navbar {
+    padding: 15px 30px;
+  }
+
+  .top-navbar.scrolled {
+    padding: 12px 30px;
+  }
+
+  .top-nav-links {
+    gap: 15px;
+  }
+
+  .top-nav-item {
+    font-size: 12px;
+  }
+
+  .top-navbar-logo {
+    font-size: 24px;
+  }
+
+  .top-login-link {
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .top-mobile-menu-icon {
+    display: block;
+  }
+
+  .top-nav-links {
+    display: none;
+  }
+
+  .top-nav-links-mobile {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background-color: rgba(15, 15, 15, 0.98);
+    backdrop-filter: blur(10px);
+    padding: 20px 0;
+    list-style: none;
+    transition: all 0.4s ease-in-out;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.5);
+  }
+
+  .top-nav-links-mobile li {
+    padding: 15px 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .top-nav-links-mobile .top-nav-item {
+    font-size: 16px;
+    display: block;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .top-navbar {
+    padding: 15px 20px;
+  }
+
+  .top-navbar.scrolled {
+    padding: 12px 20px;
+  }
+
+  .top-navbar-logo {
+    font-size: 20px;
+  }
+
+  .top-profile-icon {
+    font-size: 24px;
+  }
+
+  .top-login-link {
+    font-size: 12px;
+  }
+}
