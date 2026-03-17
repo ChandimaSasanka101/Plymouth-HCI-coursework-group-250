@@ -1,0 +1,118 @@
+/* Login.css */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Esteban&display=swap');
+
+.login-container {
+    min-height: 100vh;
+    background-color: #121212;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Esteban', serif;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.login-container .login-box {
+    background-color: rgba(20, 20, 20, 0.8);
+    padding: 50px 40px;
+    border-radius: 15px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(193, 183, 184, 0.1);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+}
+
+.login-container h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 32px;
+    color: #C1B7B8;
+    letter-spacing: 3px;
+    margin-bottom: 30px;
+    font-weight: 200;
+    margin-top: 0;
+}
+
+.login-container .input-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.login-container label {
+    display: block;
+    color: #888;
+    margin-bottom: 8px;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(193, 183, 184, 0.2);
+    border-radius: 8px;
+    color: #C1B7B8;
+    font-family: 'Esteban', serif;
+    font-size: 15px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+}
+
+.login-container input:focus {
+    border-color: #C1B7B8;
+    box-shadow: 0 0 10px rgba(193, 183, 184, 0.1);
+}
+
+.login-container .login-btn {
+    background-color: #C1B7B8;
+    color: #141414;
+    border: none;
+    width: 100%;
+    padding: 15px;
+    border-radius: 50px;
+    font-family: 'Cinzel', serif;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.login-container .login-btn:hover {
+    background-color: #DED2D3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(214, 207, 199, 0.2);
+}
+
+.login-container .Forgot-link {
+    text-decoration: none;
+    margin-top: 20px;
+    color: #888;
+    font-size: 14px;
+}
+
+.login-container .Forgot-link:hover {
+    color: #C1B7B8;
+    text-decoration: underline;
+}
+
+.login-container .register-link {
+    text-decoration: none;
+    margin-top: 25px;
+    color: #888;
+    font-size: 14px;
+}
+
+.login-container .register-link a {
+    color: #C1B7B8;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.login-container .register-link a:hover {
+    color: #fff;
+    text-decoration: underline;
+}
