@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { loginUser } from "../services/LoginAPI";
 import { PasswordRest } from "../services/authAPI";
+import './Login.css';
 
 function Login() {
   const [userEmail, setUserEmail] = useState("");
@@ -18,7 +19,7 @@ function Login() {
       const data = await loginUser({ userEmail, userPassword });
       console.log("User ID:", data._id);
       sessionStorage.setItem("userId", data._id);
-      Swal.fire("Success", "Login Successful", "success");
+      // Swal.fire("Success", "Login Successful", "success");
       if (data.type === "Customer") {
         navigate("/home");
       } else if (data.type === "Admin") {
@@ -34,9 +35,11 @@ function Login() {
       }
     }
   };
+  
   const goToRegister = () => {
     navigate("/register");
   };
+
   //handleforgotpassword
   const handleForgotPassword = async () => {
     const { value: email } = await Swal.fire({
@@ -72,45 +75,53 @@ function Login() {
     }
   };
   return (
-    <div>
-      <h2>Welcome</h2>
-      <form onSubmit={logIn}>
-        <label>Email</label>
-        <input
-          type="email"
-          value={userEmail}
-          onChange={(e) => setUserEmail(e.target.value)}
-          placeholder="User@gmail.com"
-          required
-        />
-        <label>Password</label>
-        <input
-          type="password"
-          value={userPassword}
-          onChange={(e) => setUserPassword(e.target.value)}
-          placeholder="password"
-          required
-        />
-        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-        <button type="submit">Login</button>
-      </form>
-      <div>
-        <a
-          onClick={handleForgotPassword}
-          style={{
-            cursor: "pointer",
-            color: "blue",
-            textDecoration: "underline",
-          }}
-        >
+    <div className="login-container">
+      <div className="login-box">
+
+        <h2>Welcome</h2>
+        <form onSubmit={logIn}>
+          <div className="input-group">
+            <label>Email</label>
+            <input
+              type="email"
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+              placeholder="User@gmail.com"
+              required
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Password</label>
+            <input
+              type="password"
+              value={userPassword}
+              onChange={(e) => setUserPassword(e.target.value)}
+              placeholder="password"
+              required
+            />
+          </div>
+
+          {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+          <button type="submit" className="login-btn">Login</button>
+        </form>
+
+        <div style={{ marginTop: '20px' }}>
+          <a
+            className="Forgot-link"
+            onClick={handleForgotPassword}
+            style={{ cursor: 'pointer' }}
+          >
           Forgot Password
         </a>
       </div>
-      <div>
-        <p> Don't have an account?</p>
-        <button onClick={goToRegister}>Register</button>
+
+      <div className="register-link">
+        <p>Don't have an account? <a onClick={goToRegister} style={{ cursor: 'pointer' }}>Register</a></p>
       </div>
+
     </div>
+    </div >
   );
 }
 
