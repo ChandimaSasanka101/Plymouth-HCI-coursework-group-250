@@ -1,0 +1,203 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Esteban&display=swap");
+
+.profile-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(193, 183, 184, 0.1), transparent 45%),
+    rgba(5, 5, 5, 0.7);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 4000;
+  animation: overlayFadeIn 0.35s ease forwards;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.profile-modal-card {
+  width: min(560px, 100%);
+  background: linear-gradient(160deg, rgba(24, 24, 24, 0.96), rgba(16, 16, 16, 0.96));
+  border: 1px solid rgba(193, 183, 184, 0.25);
+  border-radius: 20px;
+  padding: 40px 34px 32px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(193, 183, 184, 0.08) inset;
+  color: #c1b7b8;
+  position: relative;
+  animation: modalRise 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: translateY(28px) scale(0.97);
+  opacity: 0;
+}
+
+.profile-title {
+  margin: 0;
+  text-align: center;
+  font-family: "Cinzel", serif;
+  letter-spacing: 5px;
+  font-size: clamp(24px, 2.4vw, 34px);
+  color: #ded2d3;
+  font-weight: 400;
+}
+
+.profile-subtitle {
+  margin: 10px 0 28px;
+  text-align: center;
+  color: #8f8788;
+  font-family: "Esteban", serif;
+  letter-spacing: 1px;
+  font-size: 13px;
+}
+
+.profile-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(193, 183, 184, 0.35);
+  color: #c1b7b8;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.profile-close-btn:hover {
+  background: #c1b7b8;
+  color: #141414;
+  transform: rotate(90deg);
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-form label {
+  font-family: "Cinzel", serif;
+  color: #b9afb0;
+  letter-spacing: 1.5px;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.profile-form input {
+  width: 100%;
+  border: 1px solid rgba(193, 183, 184, 0.28);
+  background: rgba(255, 255, 255, 0.04);
+  color: #ded2d3;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-family: "Esteban", serif;
+  font-size: 14px;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+.profile-form input:focus {
+  outline: none;
+  border-color: #c1b7b8;
+  box-shadow: 0 0 0 3px rgba(193, 183, 184, 0.1);
+}
+
+.profile-form input[readonly] {
+  opacity: 0.9;
+}
+
+.profile-main-btn,
+.profile-save-btn,
+.profile-cancel-btn,
+.profile-logout-btn {
+  margin-top: 22px;
+  border-radius: 999px;
+  padding: 11px 20px;
+  font-family: "Cinzel", serif;
+  letter-spacing: 1.2px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.profile-main-btn,
+.profile-save-btn {
+  border: 1px solid #c1b7b8;
+  background: transparent;
+  color: #c1b7b8;
+}
+
+.profile-main-btn:hover,
+.profile-save-btn:hover {
+  background: #c1b7b8;
+  color: #141414;
+  transform: translateY(-2px);
+}
+
+.profile-button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.profile-button-group button {
+  flex: 1;
+}
+
+.profile-cancel-btn {
+  border: 1px solid #8f6b6b;
+  background: transparent;
+  color: #d0a7a7;
+}
+
+.profile-cancel-btn:hover {
+  background: #8b0000;
+  border-color: #8b0000;
+  color: #fff;
+}
+
+.profile-logout-btn {
+  border: 1px solid #8b0000;
+  background: transparent;
+  color: #ff4b4b;
+}
+
+.profile-logout-btn:hover {
+  background: #8b0000;
+  border-color: #8b0000;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.profile-loading {
+  text-align: center;
+  font-family: "Cinzel", serif;
+  letter-spacing: 2px;
+  color: #c1b7b8;
+  padding: 20px 0;
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalRise {
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-modal-card {
+    padding: 34px 18px 24px;
+    border-radius: 16px;
+  }
+
+  .profile-button-group {
+    flex-direction: column;
+  }
+}
