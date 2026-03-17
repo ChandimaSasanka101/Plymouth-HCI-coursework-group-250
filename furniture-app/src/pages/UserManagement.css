@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Esteban&display=swap');
+
+.user-management-page {
+  min-height: 100vh;
+  background: #121212;
+  color: #c1b7b8;
+  padding: 120px 24px 40px;
+  box-sizing: border-box;
+}
+
+.user-management-header {
+  max-width: 1200px;
+  margin: 0 auto 24px;
+}
+
+.user-management-eyebrow {
+  margin: 0 0 8px;
+  font-family: 'EUR42', 'Cinzel', serif, sans-serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #888;
+}
+
+.user-management-header h1 {
+  margin: 0;
+  font-family: 'EUR42', 'Cinzel', serif, sans-serif;
+  font-size: clamp(30px, 4vw, 44px);
+  letter-spacing: 2px;
+  color: #ded2d3;
+  font-weight: 300;
+}
+
+.user-management-header p {
+  margin: 12px 0 0;
+  color: #968d8e;
+  font-family: 'Esteban', serif;
+  font-size: 15px;
+}
