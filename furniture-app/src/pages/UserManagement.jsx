@@ -62,6 +62,30 @@ function UserManagement() {
 
   if (loading) return <div>Loading users...</div>;
   if (error) return <div style={{ color: "red" }}>Error: {error}</div>;
+  if (loading) {
+    return (
+      <>
+        <TopNav />
+        <div className="user-management-page">
+          <div className="user-management-state">Loading users...</div>
+        </div>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <TopNav />
+        <div className="user-management-page">
+          <div className="user-management-state user-management-error">
+            Error: {error}
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <div>
       <div id="userTable-container">
