@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { UserManagementAPI } from "../services/userManagementAPI";
+import TopNav from "../components/TopNav";
+import "./UserManagement.css";
+
 function UserManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
