@@ -30,3 +30,50 @@ A comprehensive web application tailored for interior designers and retail clien
 * **Accent Color:** Light Grey / White (reserved for primary calls-to-action like the 3D Render toggle for clear system feedback).
 * **Card Design:** Circular Image Cards (Design A layout - preferred for premium brand perception).
 * **Interaction Layout:** Maximized central workspace with essential tools accessible on a left-aligned sidebar.
+
+## Features
+
+### 1.0 Designer & Client Features
+
+| Feature | Description | Status |
+| :--- | :--- | :---: |
+| 1.1 User Registration | Secure account creation for designers | ✅ |
+| 1.2 Authentication | Secure login & password reset via temporary tokens | ✅ |
+| 1.3 Profile Management | User profile management dashboard | ✅ |
+| 1.4 Room Specification | Input exact room dimensions, select wall & floor colors | ✅ |
+| 1.5 2D Layout Creation | Interactive 2D grid with real-time drag-and-drop mechanics | ✅ |
+| 1.6 3D Visualization | Instant 2D-to-3D toggle using React-Three-Fiber | ✅ |
+| 1.7 Item Manipulation | Scale (W/D sliders), rotate, and reposition furniture | ✅ |
+| 1.8 Collision Detection | AABB algorithm preventing overlapping/out-of-bound items | ✅ |
+| 1.9 Aesthetic Customization | Dedicated color picker and global lighting/shading controls | ✅ |
+| 1.10 Project Management | Save, retrieve, edit, and delete layouts via MongoDB | ✅ |
+| 1.11 Undo/Redo System | Custom history stack for error prevention and recovery | ✅ |
+
+### 2.0 Admin Features
+
+| Feature | Description | Status |
+| :--- | :--- | :---: |
+| 2.1 Admin Dashboard | Visual charts tracking new account creation | ✅ |
+| 2.2 User Management | Secure interface for managing access (Ban/Unban users) | ✅ |
+
+---
+
+## Project Structure
+
+```text
+coursework-group-250/
+├── backend/
+│   ├── src/
+│   │   ├── controllers/  # Business logic (Design API, Auth logic)
+│   │   ├── middleware/   # Authorization, error handling
+│   │   ├── models/       # MongoDB schemas (User, Layout Designs)
+│   │   ├── routes/       # RESTful API endpoints
+│   │   └── server.js     # Express server entry point
+│   └── package.json
+└── frontend/
+    ├── src/
+    │   ├── components/   # Reusable UI (2D Grid, 3D Canvas, Controls)
+    │   ├── pages/        # Route components (Home, Editor, Dashboard)
+    │   ├── services/     # API integration (DesignAPI service layer)
+    │   └── App.jsx       # Main React component & routing
+    └── package.json
