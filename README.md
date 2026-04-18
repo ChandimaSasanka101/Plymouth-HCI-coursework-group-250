@@ -1,79 +1,213 @@
-# 🛏️ Moden Furniture - Interactive 2D & 3D Visualization
+# 🛋️ Moden Furniture
 
-> A full-stack interactive 2D and 3D furniture visualization application built for PUSL3122 HCI, Computer Graphics and Visualization.
+> An interactive web-based 2D and 3D furniture visualization application built for interior designers and retail clients.
 
-**Project Model:** Interactive Workspace & Retail Consultation Tool
-**Module:** PUSL3122 HCI, Computer Graphics and Visualization
-**University:** Plymouth University
+**Module:** PUSL3122 – HCI, Computer Graphics and Visualization  
+**Program:** BSC (Hons) in Software Engineering | Plymouth University (in partnership)  
+**Group:** 250
 
-A comprehensive web application tailored for interior designers and retail clients. It features secure role-based access, an interactive 2D layout editor with real-time collision detection, instant realistic 3D scene rendering, procedural 3D furniture generation, and persistent project portfolio management.
+---
 
-## Architecture
+## 📋 Table of Contents
 
-**MERN Stack SPA** - Robust client-server architecture utilizing a React Single Page Application (SPA) frontend. It features localized state management for 2D object manipulation and seamless viewport conversion that maps directly to a WebGL 3D canvas, connected to a custom RESTful "DesignAPI" service layer.
+- [About the Project](#about-the-project)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Team](#team)
+- [Screenshots](#screenshots)
+- [Video Demo](#video-demo)
+- [License](#license)
 
-## Tech Stack
+---
 
-| Layer | Technology |
-| :--- | :--- |
-| **Frontend** | React.js, HTML5, CSS |
-| **Backend** | Node.js, Express.js |
-| **Database** | MongoDB (JSON serialization for layout states) |
-| **Graphics & 3D** | WebGL, Three.js, React-Three-Fiber, React-Three-Drei |
-| **Collision Logic** | Custom Axis-Aligned Bounding Box (AABB) Algorithm |
-| **Modeling** | Procedural 3D Modeling with Physically Based Rendering (PBR) |
-| **State Tracking** | Custom History Stack Array (Undo/Redo functionality) |
+## About the Project
 
-## Design System
+**Moden Furniture** is a full-stack web application that enables interior designers and retail clients to design, visualize, and manage room layouts in both 2D and 3D. The application solves the real-world retail challenge of *spatial anxiety* — customers buying furniture that doesn't fit their space — by providing an immersive, real-time visualization tool.
 
-* **Primary Theme:** Dark Theme / Monochromatic Grays (Palette 1 - chosen via A/B testing for visual comfort and reduced eye strain).
-* **Accent Color:** Light Grey / White (reserved for primary calls-to-action like the 3D Render toggle for clear system feedback).
-* **Card Design:** Circular Image Cards (Design A layout - preferred for premium brand perception).
-* **Interaction Layout:** Maximized central workspace with essential tools accessible on a left-aligned sidebar.
+The project was developed using an agile methodology with continuous user research, iterative prototyping (paper → Figma → React), and three rounds of user surveys involving industry professionals.
+
+---
 
 ## Features
 
-### 1.0 Designer & Client Features
+### 🔐 User Access & Security
+- Secure login and registration for designers
+- Password reset system using temporary tokens
+- Role-based access control (Designer vs. Admin)
 
-| Feature | Description | Status |
-| :--- | :--- | :---: |
-| 1.1 User Registration | Secure account creation for designers | ✅ |
-| 1.2 Authentication | Secure login & password reset via temporary tokens | ✅ |
-| 1.3 Profile Management | User profile management dashboard | ✅ |
-| 1.4 Room Specification | Input exact room dimensions, select wall & floor colors | ✅ |
-| 1.5 2D Layout Creation | Interactive 2D grid with real-time drag-and-drop mechanics | ✅ |
-| 1.6 3D Visualization | Instant 2D-to-3D toggle using React-Three-Fiber | ✅ |
-| 1.7 Item Manipulation | Scale (W/D sliders), rotate, and reposition furniture | ✅ |
-| 1.8 Collision Detection | AABB algorithm preventing overlapping/out-of-bound items | ✅ |
-| 1.9 Aesthetic Customization | Dedicated color picker and global lighting/shading controls | ✅ |
-| 1.10 Project Management | Save, retrieve, edit, and delete layouts via MongoDB | ✅ |
-| 1.11 Undo/Redo System | Custom history stack for error prevention and recovery | ✅ |
+### 🗺️ Core Design Functionality
+- Interactive **2D Layout Editor** with exact room dimension inputs
+- Drag-and-drop furniture placement on a grid canvas
+- Instant **2D → 3D rendering toggle** using React-Three-Fiber
+- 360-degree OrbitControls for full 3D room inspection
 
-### 2.0 Admin Features
+### ✏️ Design Modification
+- Scale and rotate individual furniture pieces
+- Per-item and global color customization
+- Real-time **collision detection** (AABB algorithm) to prevent overlapping
+- Undo/Redo support via a custom history stack
 
-| Feature | Description | Status |
-| :--- | :--- | :---: |
-| 2.1 Admin Dashboard | Visual charts tracking new account creation | ✅ |
-| 2.2 User Management | Secure interface for managing access (Ban/Unban users) | ✅ |
+### 💾 Project Management
+- Save, edit, and delete room designs (persisted to MongoDB)
+- Design Management Dashboard with search functionality
+
+### 🛡️ Admin Capabilities
+- Visual charts tracking new account creation
+- User management (ban/unban accounts)
+
+---
+
+## Tech Stack
+
+| Layer       | Technology                                      |
+|-------------|-------------------------------------------------|
+| Frontend    | React.js (SPA), CSS                             |
+| 3D Graphics | Three.js, React-Three-Fiber, React-Three-Drei   |
+| Backend     | Node.js, Express.js                             |
+| Database    | MongoDB                                         |
+| API Layer   | RESTful API (custom `DesignAPI` service)        |
+| Auth        | Session-based with token-reset flow             |
+
+> The application uses **WebGL via Three.js** for real-time rasterization-based 3D rendering, satisfying the module's graphics implementation requirement. All 3D furniture models are **procedurally generated** using Three.js primitive geometries and Physically Based Rendering (PBR) materials — no external `.gltf` files are loaded.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v18+)
+- npm or yarn
+- MongoDB (local instance or MongoDB Atlas URI)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/ChandimaSasanka101/Plymouth-HCI-coursework-group-250.git
+   cd Plymouth-HCI-coursework-group-250
+   ```
+
+2. **Install backend dependencies**
+   ```bash
+   cd backend
+   npm install
+   ```
+
+3. **Install frontend dependencies**
+   ```bash
+   cd ../furniture-app
+   npm install
+   ```
+
+4. **Configure environment variables**
+
+   Create a `.env` file in the `/backend` directory:
+   ```env
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
+   PORT=5000
+   ```
+
+5. **Run the application**
+
+   In one terminal (backend):
+   ```bash
+   cd backend
+   npm start
+   ```
+
+   In another terminal (frontend):
+   ```bash
+   cd furniture-app
+   npm start
+   ```
+
+6. **Open in browser**
+   ```
+   http://localhost:3000
+   ```
 
 ---
 
 ## Project Structure
 
-```text
-coursework-group-250/
-├── backend/
-│   ├── src/
-│   │   ├── controllers/  # Business logic (Design API, Auth logic)
-│   │   ├── middleware/   # Authorization, error handling
-│   │   ├── models/       # MongoDB schemas (User, Layout Designs)
-│   │   ├── routes/       # RESTful API endpoints
-│   │   └── server.js     # Express server entry point
-│   └── package.json
-└── frontend/
-    ├── src/
-    │   ├── components/   # Reusable UI (2D Grid, 3D Canvas, Controls)
-    │   ├── pages/        # Route components (Home, Editor, Dashboard)
-    │   ├── services/     # API integration (DesignAPI service layer)
-    │   └── App.jsx       # Main React component & routing
-    └── package.json
+```
+Plymouth-HCI-coursework-group-250/
+├── furniture-app/              # React frontend (SPA)
+│   └── src/
+│       ├── pages/
+│       │   └── Design.jsx      # 2D/3D editor core component
+│       ├── components/         # Reusable UI components
+│       └── services/
+│           └── DesignAPI.js    # API service layer
+├── backend/                    # Node.js + Express backend
+│   ├── routes/                 # API route handlers
+│   ├── models/                 # MongoDB Mongoose schemas
+│   └── controllers/            # Business logic
+└── README.md
+```
+
+---
+
+## Team
+
+| Student ID | Name                        | Role                                      |
+|------------|-----------------------------|-------------------------------------------|
+| 10953004   | Duhudu A Wijesinghe         | Project Leader & Backend Developer        |
+| 10952755   | Kandana Chandima Sasanka    | UI/UX Design Lead & Frontend Developer    |
+| 10953031   | M M M S Muhandiram          | Frontend Developer & User Testing         |
+| 10952719   | K H M R D Karunarathna      | Frontend Developer (Registration)         |
+| 10953029   | R R Kasun Rathnayake        | Frontend Developer (Authentication)       |
+| 10953030   | P M Undugoda                | Frontend Developer & UX Researcher        |
+
+---
+
+## Screenshots
+
+> Paper prototypes → Figma high-fidelity mockups → Final React implementation.
+
+The application went through three design phases informed by user research:
+- **Survey 1** (10 respondents): Requirement gathering with industry professionals
+- **Survey 2** (25 respondents): Color palette & accessibility validation → Monochromatic/dark theme selected
+- **Survey 3** (28 respondents): A/B testing of two UI layouts → Design A (circular cards) adopted (60.7% preference)
+
+---
+
+## Video Demo
+
+- 🎬 **YouTube:** [https://youtu.be/CT-_IAtLQyY3](https://youtu.be/CT-_IAtLQyY3)
+- 📁 **OneDrive:** [View Presentation](https://liveplymouthacmy.sharepoint.com/:f:/g/personal/10953031_students_plymouth_ac_uk/IgB6gc4vh8n0SqsfNJxHPgybAZd0MD3EvSLooQAkVAhhdRE?e=wxeYL8)
+
+---
+
+## Key Implementation Details
+
+### Collision Detection
+Furniture overlap prevention is implemented using an **Axis-Aligned Bounding Box (AABB)** algorithm, preventing items from being placed on top of each other or outside room boundaries.
+
+### 2D Drag-and-Drop
+Built from scratch using native mouse event listeners — no third-party drag-and-drop libraries. Mouse offsets are calculated relative to the container's bounding rectangle to update X/Z coordinates in real time.
+
+### Undo/Redo
+A custom **history stack array** captures snapshots of the items state on every successful user interaction, enabling seamless forward/backward navigation through design states.
+
+### Procedural 3D Models
+All furniture models (tables, chairs, beds, etc.) are generated procedurally using Three.js `BoxGeometry` primitives with `meshStandardMaterial` and `meshPhysicalMaterial` for realistic surface simulation (e.g., tempered glass table tops, high-gloss varnish on cupboards).
+
+---
+
+## Known Limitations
+
+1. **Mobile/Touch Support** — The 2D editor's drag-and-drop was optimized for desktop mouse events. Dedicated touch-event handlers are needed for tablet/mobile support.
+2. **Real-time Global Illumination** — Full dynamic light bounce calculation is too resource-intensive for browser-based environments on older hardware. Currently uses optimized shadow mapping with a global lighting slider.
+
+---
+
+## Module
+
+**PUSL3122 – HCI, Computer Graphics and Visualization**  
+Supervisor: Dr. Taimur Bakhshi  
+Deadline: 19/03/2026
