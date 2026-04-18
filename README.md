@@ -1,4 +1,4 @@
-# 🛋️ Moden Furniture
+# 🛏️ Moden Furniture - Interactive 2D & 3D Visualization
 
 > An interactive web-based 2D and 3D furniture visualization application built for interior designers and retail clients.
 
