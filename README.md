@@ -3,7 +3,6 @@
 > An interactive web-based 2D and 3D furniture visualization application built for interior designers and retail clients.
 
 **Module:** PUSL3122 – HCI, Computer Graphics and Visualization  
-**Program:** BSC (Hons) in Software Engineering - Plymouth University 
 **Group:** 250
 
 ---
